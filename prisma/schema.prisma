@@ -7,19 +7,21 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Yacht {
-  id          Int      @id @default(autoincrement())
-  name        String
-  type        String
-  guests      Int
-  length      Int
-  cabins      Int
-  location    String
-  price       Int?
-  minHours    Int      @default(3)
-  marina      String
-  img         String
-  isF1        Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model AmenityCategory {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  items     Amenity[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Amenity {
+  id         Int             @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   AmenityCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([categoryId, name])
 }

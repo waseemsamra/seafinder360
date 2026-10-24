@@ -76,15 +76,15 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
                 <svg className="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 <span>Dashboard</span>
               </Link>
-              <Link href="#" className="nav-link">
+              <Link href="/admin/bookings" className={`nav-link ${activePage === 'bookings' ? 'active' : ''}`}>
                 <svg className="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 <span>Bookings</span>
               </Link>
-              <Link href="#" className="nav-link">
+              <Link href="/admin/yachts" className={`nav-link ${activePage === 'yachts' ? 'active' : ''}`}>
                 <svg className="nav-icon" viewBox="0 0 24 24"><path d="M2 12h20"></path><path d="M12 2v20"></path><path d="M4.93 4.93l14.14 14.14"></path><path d="M19.07 4.93L4.93 19.07"></path></svg>
                 <span>Yacht Fleet</span>
               </Link>
-              <Link href="#" className="nav-link">
+              <Link href="/admin/categories" className={`nav-link ${activePage === 'categories' ? 'active' : ''}`}>
                 <svg className="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                 <span>Categories</span>
               </Link>
