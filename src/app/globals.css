@@ -155,34 +155,15 @@ img { max-width: 100%; display: block; }
   }
 }
 
-@media (max-width: 480px) {
-  .top-bar {
-    font-size: 10px;
-  }
-  .top-bar-item {
-    gap: 4px;
-  }
-  .header {
-    top: 70px;
-  }
-  .hero h1 {
-    font-size: 2.2rem;
-    line-height: 1.15;
-  }
-  .hero p {
-    font-size: 14px;
-  }
-  .section-title {
-    font-size: 1.9rem;
-  }
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 3px;
-  }
-  .btn-primary {
-    width: 100%;
-    max-width: 280px;
-  }
+@media (max-width: 640px) {
+  .fleet-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+  .yacht-card { width: 100%; }
+  .yacht-image { height: 220px; }
+  .yacht-info { padding: 20px; }
+  .yacht-name { font-size: 1.25rem; }
+  .yacht-specs { gap: 12px; flex-wrap: wrap; }
+  .yacht-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-view { width: 100%; text-align: center; }
 }
 
 /* MOBILE NAV OVERLAY */
