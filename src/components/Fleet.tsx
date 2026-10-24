@@ -37,7 +37,7 @@ export default function Fleet() {
               </div>
                 <div className="yacht-footer">
                   <div className="yacht-price">{y.price} <span>/ day</span></div>
-                  <Link href={`/yachts/${y.id}`} className="btn-view">View Yacht</Link>
+                  <Link href={`/yachts/1`} className="btn-view">View Yacht</Link>
                 </div>
             </div>
           </div>
