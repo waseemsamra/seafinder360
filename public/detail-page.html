@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian Yacht 66FT | SeaFinder360</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* SEA FINDER 360 BRAND COLORS */
+            --navy: #1A222C;
+            --navy-light: #2A3543;
+            --gold: #C4A87C;
+            --gold-hover: #b0956a;
+            --gold-bg: #F9F6F0;
+            
+            /* WHATSAPP GREEN */
+            --green: #25D366;
+            --green-hover: #1EBE5A;
+            
+            /* NEUTRALS */
+            --text-dark: #1A1A1A;
+            --text-muted: #6B7280;
+            --bg-page: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-grey: #F9FAFB;
+            --border-color: #E5E7EB;
+            
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-dark); line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; cursor: pointer; border: none; }
+
+        /* ============ TOP NAVIGATION ============ */
+        .top-nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .top-nav a { transition: color 0.2s; }
+        .top-nav a:hover { color: var(--navy); }
+        .top-nav .current { color: var(--navy); font-weight: 600; }
+        .top-nav .separator { color: #D1D5DB; }
+
+        /* ============ MAIN LAYOUT ============ */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* ========================================== */
+        /* 🖼️ LEFT COLUMN                             */
+        /* ========================================== */
+        .left-col { display: flex; flex-direction: column; gap: 30px; }
+
+        /* Hero Image */
+        .hero-image-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+        }
+        .badge-ft-custom {
+            position: absolute;
+            top: 25px;
+            left: -30px;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 6px 40px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Thumbnails */
+        .thumbnail-strip {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .thumb {
+            width: 110px;
+            height: 75px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb.active, .thumb:hover { border-color: var(--gold); }
+
+        /* Title & Meta */
+        .yacht-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--navy);
+        }
+        .meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .meta-tag { display: flex; align-items: center; gap: 5px; }
+        .meta-tag svg { width: 14px; height: 14px; fill: var(--navy); }
+
+        /* Specs Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .spec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .spec-card svg { width: 20px; height: 20px; color: var(--navy); }
+        .spec-card .val { font-size: 18px; font-weight: 700; color: var(--navy); }
+        .spec-card .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600; }
+
+        /* Content Sections */
+        .content-section {
+            background: var(--bg-grey);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .content-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--navy);
+        }
+        .content-section p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .content-section p:last-child { margin-bottom: 0; }
+
+        /* Amenities List */
+        .amenities-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--navy);
+            font-weight: 500;
+        }
+        .amenity-item svg { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; }
+
+        /* Important Info List */
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .info-item svg { width: 16px; height: 16px; color: var(--navy); flex-shrink: 0; margin-top: 2px; }
+        .info-item.highlight {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: var(--navy);
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        /* ========================================== */
+        /* 💳 RIGHT COLUMN (BOOKING WIDGET)           */
+        /* ========================================== */
+        .right-col { position: relative; }
+        
+        .booking-widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Price Header */
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .price-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .price-value { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.1; margin-top: 5px; }
+        .price-value span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+        .price-tag { background: var(--bg-grey); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+
+        /* Form Groups */
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            background: var(--bg-card);
+        }
+        .input-wrapper input {
+            border: none; outline: none; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--navy);
+        }
+        .input-wrapper svg { width: 18px; height: 18px; color: var(--text-muted); }
+
+        /* Sliders */
+        .slider-container {
+            position: relative;
+            padding: 15px 0;
+        }
+        .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+        
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--gold); cursor: pointer; margin-top: -6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid white;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px;
+        }
+        
+        /* Custom Time Slider visual */
+        .time-slider-track {
+            height: 6px; background: var(--border-color); border-radius: 3px; position: relative; margin: 20px 0;
+        }
+        .time-slider-active {
+            position: absolute; left: 30%; right: 20%; height: 100%; background: var(--gold); border-radius: 3px;
+        }
+        .time-slider-thumb {
+            position: absolute; top: 50%; width: 16px; height: 16px; background: var(--gold); border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .time-tooltip {
+            position: absolute; top: -30px; background: var(--navy); color: white; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px; transform: translateX(-50%); white-space: nowrap;
+        }
+        .time-tooltip::after {
+            content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-width: 4px; border-style: solid; border-color: var(--navy) transparent transparent transparent;
+        }
+
+        /* Availability Box */
+        .availability-box {
+            background: var(--bg-grey);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .avail-icon { width: 24px; height: 24px; background: #E5E7EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: var(--text-dark); }
+        .avail-text p { font-size: 12px; font-weight: 700; color: var(--navy); margin: 0; }
+        .avail-text span { font-size: 12px; color: var(--text-muted); }
+
+        /* Action Buttons */
+        .btn-widget {
+            width: 100%; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; transition: all 0.2s;
+        }
+        .btn-primary-widget { background: var(--navy); color: white; }
+        .btn-primary-widget:hover { background: var(--navy-light); }
+        .btn-outline-widget { background: transparent; border: 1px solid var(--navy); color: var(--navy); }
+        .btn-outline-widget:hover { background: var(--navy); color: white; }
+        .btn-whatsapp { background: var(--green); color: white; }
+        .btn-whatsapp:hover { background: var(--green-hover); }
+
+        /* Cancellation */
+        .cancellation-box {
+            display: flex; gap: 12px; align-items: flex-start; padding: 15px 0; border-top: 1px solid var(--border-color); margin-top: 15px; margin-bottom: 15px;
+        }
+        .cancellation-box svg { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+        .cancellation-box p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
+
+        .widget-footer { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: 500; border-top: 1px solid var(--border-color); padding-top: 15px; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .page-container { grid-template-columns: 1fr; }
+            .right-col { order: -1; }
+            .booking-widget { position: static; }
+            .specs-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="top-nav">
+        <a href="#">Home</a>
+        <span class="separator">/</span>
+        <a href="#">Yacht Charters</a>
+        <span class="separator">/</span>
+        <a href="#">Dubai Marina (GMCO)</a>
+        <span class="separator">/</span>
+        <span class="current">Italian Yacht 66FT</span>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <main class="page-container">
+        
+        <!-- LEFT COLUMN -->
+        <div class="left-col">
+            
+            <!-- Hero Image -->
+            <div class="hero-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1200&auto=format&fit=crop" alt="Italian Yacht 66FT">
+                <div class="badge-ft-custom">66 FT</div>
+            </div>
+
+            <!-- Thumbnails -->
+            <div class="thumbnail-strip">
+                <div class="thumb active">
+                    <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=200&auto=format&fit=crop" alt="Exterior">
+                </div>
+                <div class="thumb">
+                    <img src="https://images.unsplash.com/photo-1543160915-158a41397584?q=80&w=200&auto=format&fit=crop" alt="Interior">
+                </div>
+                <div class="thumb">
+                    <img src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=200&auto=format&fit=crop" alt="Salon">
+                </div>
+                <div class="thumb">
+                    <img src="https://images.unsplash.com/photo-1543160915-158a41397584?q=80&w=200&auto=format&fit=crop" alt="Deck">
+                </div>
+            </div>
+
+            <!-- Title & Meta -->
+            <div class="yacht-header">
+                <h1>Italian Yacht 66FT</h1>
+                <div class="meta-tags">
+                    <span class="meta-tag">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg> 66 Feet
+                    </span>
+                    <span class="meta-tag">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Up to 25 Guests
+                    </span>
+                    <span class="meta-tag">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Captain & 2 Crew
+                    </span>
+                    <span class="meta-tag">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Dubai Marina (GMCO)
+                    </span>
+                    <span class="meta-tag">
+                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> 0 (0)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Specs Grid -->
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"></path><path d="M12 2v20"></path></svg>
+                    <div class="val">66 FT</div>
+                    <div class="lbl">Length</div>
+                </div>
+                <div class="spec-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <div class="val">25</div>
+                    <div class="lbl">Max Guests</div>
+                </div>
+                <div class="spec-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <div class="val">1</div>
+                    <div class="lbl">Cabins</div>
+                </div>
+                <div class="spec-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <div class="val">2022</div>
+                    <div class="lbl">Year Built</div>
+                </div>
+            </div>
+
+            <!-- About -->
+            <div class="content-section">
+                <h3>About this yacht</h3>
+                <p>Set sail in absolute style aboard this 66-foot luxury yacht. Contemporary design meets refined Arabian hospitality, with an air-conditioned main salon, an expansive sun deck and a professional crew of 3 led by your captain. Every charter departs from Dubai Marina (GMCO) and can be tailored to your itinerary — from swimming stops at Jumeirah Beach to private island escapes.</p>
+                <p>Charters are fully customisable, from family swim stops to private corporate escapes and sunset dinner cruises.</p>
+            </div>
+
+            <!-- Amenities -->
+            <div class="content-section">
+                <h3>Onboard amenities</h3>
+                <div class="amenities-list">
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20m-8-8h16"></path></svg> Air conditioning</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg> Sun deck</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg> Wi-Fi</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg> Bluetooth audio</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"></path></svg> Onboard kitchen</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg> Outdoor grill</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path></svg> Water toys</div>
+                    <div class="amenity-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"></path></svg> Hot tub</div>
+                </div>
+            </div>
+
+            <!-- Important Info -->
+            <div class="content-section">
+                <h3>Important information</h3>
+                <div class="info-list">
+                    <div class="info-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg> No outside food or beverages — catering packages available on request.</div>
+                    <div class="info-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg> Guests under 12 must be accompanied by an adult at all times.</div>
+                    <div class="info-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg> Valid Emirates ID or passport required at check-in.</div>
+                    <div class="info-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg> Boarding begins 15 minutes before the scheduled departure time.</div>
+                    <div class="info-item highlight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg> Pickup: Berth B-14, Grand Marina Club & Yacht Club.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN (BOOKING WIDGET) -->
+        <div class="right-col">
+            <div class="booking-widget">
+                
+                <!-- Price -->
+                <div class="price-header">
+                    <div>
+                        <div class="price-label">Live price per hour</div>
+                        <div class="price-value">AED 900 <span>/ hr</span></div>
+                    </div>
+                    <div class="price-tag">0-60</div>
+                </div>
+
+                <!-- Date -->
+                <div class="form-group">
+                    <label class="form-label">Select Date</label>
+                    <div class="input-wrapper">
+                        <input type="text" value="10/25/2026" readonly>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                </div>
+
+                <!-- Charter Time Slider -->
+                <div class="form-group">
+                    <div class="slider-labels">
+                        <span>Charter Time</span>
+                        <span>10PM</span>
+                    </div>
+                    <div class="slider-labels" style="font-size: 10px; margin-bottom: 5px;">
+                        <span>6AM</span>
+                    </div>
+                    
+                    <div class="time-slider-track">
+                        <div class="time-slider-active"></div>
+                        <!-- Left Thumb -->
+                        <div class="time-slider-thumb" style="left: 30%;">
+                            <div class="time-tooltip">1PM – 5PM</div>
+                        </div>
+                        <!-- Right Thumb -->
+                        <div class="time-slider-thumb" style="left: 65%;"></div>
+                    </div>
+                </div>
+
+                <!-- Guests Slider -->
+                <div class="form-group">
+                    <div class="slider-labels">
+                        <span>Guests (Up to)</span>
+                    </div>
+                    <div style="position: relative; margin-top: 15px;">
+                        <div class="time-tooltip" style="left: 60%; top: -10px; transform: translate(-50%, -100%);">13 guests</div>
+                        <input type="range" min="1" max="25" value="13" style="margin: 0;">
+                    </div>
+                    <div class="slider-labels" style="margin-top: 5px;">
+                        <span>1</span>
+                        <span>25</span>
+                    </div>
+                </div>
+
+                <!-- Availability Box -->
+                <div class="availability-box">
+                    <div class="avail-icon">i</div>
+                    <div class="avail-text">
+                        <p>Available · 4h</p>
+                        <span>Total AED 3,750</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <button class="btn-widget btn-primary-widget">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    SHOW PRICE
+                </button>
+                
+                <button class="btn-widget btn-outline-widget">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    BOOK NOW
+                </button>
+
+                <button class="btn-widget btn-whatsapp">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    Book via WhatsApp
+                </button>
+
+                <!-- Cancellation -->
+                <div class="cancellation-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <p><strong>Cancellation policy</strong><br>Cancel for free up to 48 hours before your charter and get a full refund.</p>
+                </div>
+
+                <!-- Footer -->
+                <div class="widget-footer">
+                    <span style="display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Secure payment</span>
+                    <span style="display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg> 4.9 Trustpilot</span>
+                    <span style="display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> 24/7 Support</span>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

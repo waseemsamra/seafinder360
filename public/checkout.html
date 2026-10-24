@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | SeaFinder360</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #1A222C;
+            --navy-light: #2A3543;
+            --gold: #C4A87C;
+            --gold-hover: #b0956a;
+            --bg-page: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --border-color: #E5E7EB;
+            --text-dark: #111827;
+            --text-muted: #6B7280;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-dark); line-height: 1.5; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ============ HEADER & STEPPER ============ */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-size: 20px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+
+        .stepper { display: flex; align-items: center; gap: 20px; font-size: 13px; font-weight: 500; }
+        .step { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+        .step.active { color: var(--navy); font-weight: 600; }
+        .step-circle {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--border-color); color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center; font-size: 11px;
+        }
+        .step.active .step-circle { background: var(--navy); color: white; }
+        .step-line { width: 40px; height: 1px; background: var(--border-color); }
+
+        .header-actions { display: flex; align-items: center; gap: 15px; font-size: 13px; color: var(--text-muted); }
+        .lang-select { border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; font-weight: 500; color: var(--text-dark); }
+
+        /* ============ MAIN LAYOUT ============ */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* ========================================== */
+        /* 📝 LEFT COLUMN (FORM)                      */
+        /* ========================================== */
+        .left-col { display: flex; flex-direction: column; gap: 40px; }
+
+        /* Yacht Header Card */
+        .yacht-header-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .yacht-info h2 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+        .yacht-info p { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+        .yacht-thumb { width: 100px; height: 60px; border-radius: 6px; object-fit: cover; }
+
+        /* Sections */
+        .section-title { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+
+        /* Date Picker Row */
+        .date-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
+        .date-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; }
+        
+        .date-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 70px; height: 70px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .date-btn .day { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+        .date-btn .num { font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1.1; margin: 2px 0; }
+        .date-btn .price { font-size: 10px; color: var(--text-muted); }
+        
+        .date-btn:hover { border-color: var(--gold); }
+        .date-btn.active { background: var(--navy); border-color: var(--navy); }
+        .date-btn.active .day, .date-btn.active .num, .date-btn.active .price { color: white; }
+        
+        .date-btn-more { display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 11px; font-weight: 600; color: var(--navy); border-radius: 8px; padding: 0 15px; border: 1px solid var(--border-color); background: var(--bg-card); }
+        .date-btn-more svg { width: 20px; height: 20px; margin-bottom: 5px; }
+
+        /* Ticket Selector */
+        .ticket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .ticket-info h4 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .ticket-info p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .ticket-info .price { font-size: 14px; font-weight: 700; color: var(--navy); }
+
+        .counter-pill {
+            display: flex; align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 5px;
+            background: var(--bg-card);
+        }
+        .counter-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: var(--navy);
+            transition: background 0.2s;
+        }
+        .counter-btn:hover { background: var(--bg-page); }
+        .counter-val { width: 40px; text-align: center; font-size: 16px; font-weight: 600; color: var(--navy); }
+
+        /* Time Slots */
+        .time-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .time-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 14px; font-weight: 500; color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .time-btn:hover { border-color: var(--gold); }
+        .time-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+        /* ========================================== */
+        /* 💳 RIGHT COLUMN (SUMMARY)                  */
+        /* ========================================== */
+        .right-col { position: relative; }
+        
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 100px;
+        }
+        
+        .summary-title { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 25px; }
+
+        /* Mini Yacht Info */
+        .summary-yacht {
+            display: flex; gap: 15px; align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .summary-yacht img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        .summary-yacht h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .summary-yacht .date-row-text { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .summary-yacht .cancel-text { font-size: 12px; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
+        .summary-yacht svg { width: 14px; height: 14px; }
+
+        /* Price Breakdown */
+        .price-breakdown { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .price-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-dark); }
+        .price-row.muted { color: var(--text-muted); }
+        
+        .total-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+        .total-row .label { font-size: 18px; font-weight: 500; color: var(--text-muted); }
+        .total-row .amount { font-size: 28px; font-weight: 700; color: var(--navy); }
+
+        /* Points Banner */
+        .points-banner {
+            background: #FEF3C7; /* Light gold/yellow */
+            color: #92400E;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px;
+        }
+        .points-banner svg { width: 16px; height: 16px; }
+
+        /* Continue Button */
+        .btn-continue {
+            width: 100%; padding: 18px;
+            background: var(--navy); color: white;
+            border-radius: 30px;
+            font-size: 16px; font-weight: 600;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+        .btn-continue:hover { background: var(--navy-light); }
+
+        /* Trust Badges */
+        .trust-badges {
+            display: flex; justify-content: center; gap: 20px;
+            font-size: 12px; color: var(--text-muted); font-weight: 500;
+        }
+        .trust-badges span { display: flex; align-items: center; gap: 5px; }
+        .trust-badges svg { width: 14px; height: 14px; color: var(--green); }
+
+        /* Floating WhatsApp */
+        .float-wa {
+            position: fixed; bottom: 30px; left: 30px;
+            background: #25D366; color: white;
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            cursor: pointer; z-index: 1000;
+        }
+        .float-wa svg { width: 32px; height: 32px; fill: white; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container { grid-template-columns: 1fr; }
+            .stepper { display: none; }
+            .summary-card { position: static; }
+            .date-row { gap: 8px; }
+            .date-btn { width: 60px; height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+            SeaFinder360
+        </div>
+
+        <div class="stepper">
+            <div class="step active">
+                <div class="step-circle">1</div> Booking
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">2</div> Upgrades
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">3</div> Details
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">4</div> Payment
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="lang-select">AED ⌄</div>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Help</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Sign in</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        
+        <!-- LEFT COLUMN -->
+        <div class="left-col">
+            
+            <!-- Yacht Header -->
+            <div class="yacht-header-card">
+                <div class="yacht-info">
+                    <h2>Italian Yacht 66FT</h2>
+                    <p>Show more info <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=200&auto=format&fit=crop" class="yacht-thumb" alt="Yacht">
+            </div>
+
+            <!-- Date Selection -->
+            <div>
+                <h2 class="section-title">When will you visit?</h2>
+                <div class="date-header">
+                    <span>23/10/2026</span>
+                    <span>29/10/2026</span>
+                </div>
+                <div class="date-row">
+                    <div class="date-btn">
+                        <div class="day">Fri</div><div class="num">23</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn">
+                        <div class="day">Sat</div><div class="num">24</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn active">
+                        <div class="day">Sun</div><div class="num">25</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn">
+                        <div class="day">Mon</div><div class="num">26</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn">
+                        <div class="day">Tue</div><div class="num">27</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn">
+                        <div class="day">Wed</div><div class="num">28</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn">
+                        <div class="day">Thu</div><div class="num">29</div><div class="price">900</div>
+                    </div>
+                    <div class="date-btn-more">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        More dates
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Selector -->
+            <div>
+                <h2 class="section-title">Select your tickets</h2>
+                <div class="ticket-card">
+                    <div class="ticket-info">
+                        <h4>Guest</h4>
+                        <p>Age 8+</p>
+                        <div class="price">AED 900.00</div>
+                    </div>
+                    <div class="counter-pill">
+                        <button class="counter-btn">−</button>
+                        <div class="counter-val">1</div>
+                        <button class="counter-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Departure Time -->
+            <div>
+                <h2 class="section-title">Choose a departure time</h2>
+                <div class="time-grid">
+                    <button class="time-btn active">06:00 – 08:00</button>
+                    <button class="time-btn">07:00 – 09:00</button>
+                    <button class="time-btn">08:00 – 10:00</button>
+                    <button class="time-btn">09:00 – 11:00</button>
+                    <button class="time-btn">10:00 – 12:00</button>
+                    <button class="time-btn">11:00 – 13:00</button>
+                    <button class="time-btn">12:00 – 14:00</button>
+                    <button class="time-btn">13:00 – 15:00</button>
+                    <button class="time-btn">14:00 – 16:00</button>
+                    <button class="time-btn">15:00 – 17:00</button>
+                    <button class="time-btn">16:00 – 18:00</button>
+                    <button class="time-btn">17:00 – 19:00</button>
+                    <button class="time-btn">18:00 – 20:00</button>
+                    <button class="time-btn">19:00 – 21:00</button>
+                    <button class="time-btn">20:00 – 22:00</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN (SUMMARY) -->
+        <div class="right-col">
+            <div class="summary-card">
+                <h2 class="summary-title">Your tickets overview</h2>
+                
+                <div class="summary-yacht">
+                    <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=200&auto=format&fit=crop" alt="Yacht">
+                    <div>
+                        <h4>Italian Yacht 66FT</h4>
+                        <div class="date-row-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Sun, 25 Oct 2026
+                        </div>
+                        <div class="cancel-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Free cancellation until 24h
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>1 × Charter</span>
+                        <span>AED 900.00</span>
+                    </div>
+                    <div class="price-row muted">
+                        <span>Service fee</span>
+                        <span>AED 25.00</span>
+                    </div>
+                    <div class="price-row muted">
+                        <span>VAT (5%)</span>
+                        <span>AED 46.25</span>
+                    </div>
+                </div>
+
+                <div class="total-row">
+                    <span class="label">Total</span>
+                    <span class="amount">AED 971.25</span>
+                </div>
+
+                <div class="points-banner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                    You'll earn 971 points on this booking
+                </div>
+
+                <button class="btn-continue">
+                    Continue
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+
+                <div class="trust-badges">
+                    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Secure booking</span>
+                    <span><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Trustpilot 4.9</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FLOATING WHATSAPP -->
+    <div class="float-wa">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </div>
+
+</body>
+</html>
