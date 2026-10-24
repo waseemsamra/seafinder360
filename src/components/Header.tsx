@@ -24,7 +24,7 @@ export default function Header() {
   return (
     <>
       <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader">
-        <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'95px', width:'auto', objectFit:'contain'}} /></a>
+        <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'110px', width:'auto', objectFit:'contain'}} /></a>
         <nav className="nav-menu">
           <a href="#" className="no-arrow">Home</a>
           <a href="#fleet">Yacht Charter</a>

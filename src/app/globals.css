@@ -29,11 +29,11 @@ img { max-width: 100%; display: block; }
 .social-icons span:hover { background-color: var(--gold); border-color: var(--gold); transform: translateY(-2px); }
 
 /* HEADER */
-.header { position: fixed; top: 39px; left: 0; width: 100%; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 16px 5%; background: #FFFFFF; color: var(--navy); transition: all 0.6s var(--ease); border-bottom: 1px solid #E5E7EB; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-.header.scrolled { top: 0; background-color: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 10px 5%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 1px solid var(--gold); }
-.logo { height: 95px; display: flex; align-items: center; justify-content: center; transition: all 0.6s var(--ease-bounce); }
-.header.scrolled .logo { transform: scale(0.9); height: 85px; }
-.header.scrolled .logo img { height: 85px !important; }
+.header { position: fixed; top: 39px; left: 0; width: 100%; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: #ffffff !important; color: var(--navy); transition: all 0.6s var(--ease); border-bottom: 1px solid #E5E7EB; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.header.scrolled { top: 0; background-color: #ffffff !important; padding: 8px 5%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 1px solid var(--gold); }
+.logo { height: 110px; display: flex; align-items: center; justify-content: center; transition: all 0.6s var(--ease-bounce); }
+.header.scrolled .logo { transform: scale(0.9); height: 95px; }
+.header.scrolled .logo img { height: 95px !important; }
 .nav-menu { display: flex; align-items: center; gap: 30px; font-size: 15px; }
 .nav-menu a { position: relative; display: flex; align-items: center; gap: 5px; transition: color 0.3s var(--ease); padding: 4px 0; color: var(--navy); font-weight: 500; }
 .nav-menu a::before { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background-color: var(--gold); transition: width 0.4s var(--ease); }
