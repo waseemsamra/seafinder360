@@ -2,20 +2,12 @@ export default function Showcase() {
   return (
     <section className="showcase">
       <div className="showcase-text">
-        <span className="section-label" style={{ color: "var(--gold)" }}>Virtual Experience</span>
-        <h2 className="section-title" style={{ color: "var(--white)" }}>Explore in 360°</h2>
-        <p>Step aboard before you step foot. Our immersive 360-degree virtual tours let you explore every deck, cabin, and detail of your future yacht from anywhere in the world.</p>
-        <ul className="showcase-features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> Full interior & exterior walkthrough</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> Interactive hotspots with details</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> Works on mobile, tablet & desktop</li>
-        </ul>
-        <a href="#" className="btn-primary" style={{ animation: "none" }}>Start Virtual Tour</a>
+        <h2>Unmatched Luxury</h2>
+        <p>Every SeaFinder360 yacht is hand-picked for its exceptional service, pristine condition, and world-class amenities. From the moment you step aboard, our dedicated crew ensures your experience is nothing short of extraordinary.</p>
+        <button className="btn-hero" style={{ padding: "14px 30px", fontSize: "13px" }} onClick={() => window.location.href='/search'}>Discover the Fleet</button>
       </div>
       <div className="showcase-image">
-        <button className="play-btn" aria-label="Play 360 Tour">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
+        <img src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop" alt="Luxury Yacht" />
       </div>
     </section>
   );

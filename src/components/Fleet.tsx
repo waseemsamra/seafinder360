@@ -13,41 +13,31 @@ const yachts = Array.from({ length: 16 }, (_, i) => ({ id: i + 1, ...base[i % ba
 export default function Fleet() {
   const [visible, setVisible] = useState(6);
   return (
-    <section className="section fleet" id="fleet">
-      <div className="section-header">
-        <span className="section-label">Featured Fleet</span>
-        <h2 className="section-title">Luxury Yachts for Charter</h2>
-        <p className="section-subtitle">Explore our hand-picked selection of premium yachts available for your next voyage.</p>
-      </div>
-      <div className="fleet-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+    <section className="fleet" id="fleet" style={{ padding: "80px 5%", background: "white", textAlign: "center" }}>
+      <h2 className="section-title">Featured Yachts</h2>
+      <p className="section-subtitle">Explore our hand-picked selection of premium yachts.</p>
+      <div className="fleet-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
         {yachts.slice(0, visible).map((y) => (
-          <div key={y.id} className="yacht-card">
-            <div className="yacht-image">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div key={y.id} className="yacht-card" onClick={() => window.location.href='/yacht-detail'}>
+            <div className="yacht-image-wrapper">
               <img src={y.img} alt={y.name + " Yacht"} />
               {y.badge && <div className="yacht-badge">{y.badge}</div>}
-              <div className="tour-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 360° Tour</div>
             </div>
-            <div className="yacht-info">
-              <h3 className="yacht-name">{y.name}</h3>
-              <div className="yacht-type">{y.type}</div>
-              <div className="yacht-specs">
-                <div className="spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> {y.guests} Guests</div>
-                <div className="spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12h20"/><path d="M12 2v20"/></svg> {y.length}</div>
-              </div>
-                <div className="yacht-footer">
-                  <div className="yacht-price">{y.price} <span>/ day</span></div>
-                  <Link href={`/yacht-detail`} className="btn-view">View Yacht</Link>
-                </div>
+            <div className="yacht-card-info">
+              <div className="card-location">Dubai Harbour</div>
+              <div className="card-name">{y.name}</div>
+              <div className="card-specs">{y.type} · {y.length} · {y.guests} guests</div>
+              <div className="card-price">{y.price} / day</div>
+              <button className="btn-view-card" onClick={(e) => {e.stopPropagation(); window.location.href='/yacht-detail'}}>View Yacht</button>
             </div>
           </div>
         ))}
       </div>
-      <div style={{ textAlign: "center", marginTop: 20 }}>
+      <div style={{ textAlign: "center", marginTop: 40 }}>
         {visible < yachts.length ? (
           <button className="btn-view" onClick={() => setVisible((v) => v + 6)}>Load more</button>
         ) : (
-          <Link href="/search" className="btn-view">View Fleet</Link>
+          <button className="btn-view" onClick={() => window.location.href='/search'}>View All Yachts</button>
         )}
       </div>
     </section>
