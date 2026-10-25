@@ -1,17 +1,16 @@
 'use client';
 import { useState } from "react";
-import Link from "next/link";
 
 const base = [
-  { name: "Majestic 120", type: "Motor Yacht", guests: 12, length: "120 ft", price: "$8,500", badge: "Best Seller", img: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=800&auto=format&fit=crop" },
-  { name: "Ocean Pearl", type: "Sailing Yacht", guests: 8, length: "85 ft", price: "$4,200", badge: null, img: "https://images.unsplash.com/photo-1543160915-158a41397584?q=80&w=800&auto=format&fit=crop" },
-  { name: "Sea Breeze", type: "Luxury Catamaran", guests: 10, length: "95 ft", price: "$6,000", badge: "New Arrival", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop" },
+  { name: "Majestic 120", type: "Motor Yacht", guests: 12, length: "120 ft", price: "AED 8,500", badge: "Best Seller", img: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=800&auto=format&fit=crop" },
+  { name: "Ocean Pearl", type: "Sailing Yacht", guests: 8, length: "85 ft", price: "AED 4,200", badge: null, img: "https://images.unsplash.com/photo-1543160915-158a41397584?q=80&w=800&auto=format&fit=crop" },
+  { name: "Sea Breeze", type: "Catamaran", guests: 10, length: "60 ft", price: "AED 6,000", badge: "New Arrival", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop" },
 ];
-const yachts = Array.from({ length: 16 }, (_, i) => ({ id: i + 1, ...base[i % base.length] }));
+const yachts = Array.from({ length: 6 }, (_, i) => ({ id: i + 1, ...base[i % base.length] }));
 
 
 export default function Fleet() {
-  const [visible, setVisible] = useState(6);
+  const [visible, setVisible] = useState(3);
   return (
     <section className="fleet" id="fleet" style={{ padding: "80px 5%", background: "white", textAlign: "center" }}>
       <h2 className="section-title">Featured Yachts</h2>
@@ -34,11 +33,7 @@ export default function Fleet() {
         ))}
       </div>
       <div style={{ textAlign: "center", marginTop: 40 }}>
-        {visible < yachts.length ? (
-          <button className="btn-view" onClick={() => setVisible((v) => v + 6)}>Load more</button>
-        ) : (
-          <button className="btn-view" onClick={() => window.location.href='/search'}>View All Yachts</button>
-        )}
+        <button className="btn-view" onClick={() => window.location.href='/search'}>View All Yachts</button>
       </div>
     </section>
   );
