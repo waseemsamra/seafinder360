@@ -6,7 +6,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="section services" id="services">
+    <section className="section services" id="services" style={{ paddingTop: "240px" }}>
       <div className="section-header">
         <span className="section-label">Our Expertise</span>
         <h2 className="section-title">The SeaFinder360 Platform</h2>
