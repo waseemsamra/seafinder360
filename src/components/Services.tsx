@@ -6,7 +6,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="section services" id="services" style={{ paddingTop: "380px", scrollMarginTop: "260px" }}>
+    <section className="section services" id="services" style={{ paddingTop: "200px", scrollMarginTop: "180px" }}>
       <div className="section-header">
         <span className="section-label">Our Expertise</span>
         <h2 className="section-title">The SeaFinder360 Platform</h2>
