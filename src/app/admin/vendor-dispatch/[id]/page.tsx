@@ -21,7 +21,7 @@ function VendorDispatchDetailContent() {
   useEffect(() => {
     if (!dispatch?.expires_at || dispatch.status !== 'pending') return;
     const interval = setInterval(() => {
-      const diff = new new Date(dispatch.expires_at).getTime() - Date.now();
+      const diff = new Date(dispatch.expires_at).getTime() - Date.now();
       setTimeLeft(Math.max(0, Math.floor(diff / 1000)));
       if (diff <= 0) {
         clearInterval(interval);
@@ -40,7 +40,7 @@ function VendorDispatchDetailContent() {
     
     if (its && its.length > 0) {
       const vendorIds = its.map((i: any) => i.vendor_id);
-      const { data: vs } = await supabase.from('vendors').select('*).in('id', vendorIds);
+      const { data: vs } = await supabase.from("vendors").select("*").in("id", vendorIds);
       const map: any = {};
       (vs || []).forEach((v: any) => { map[v.id] = v; });
       setVendors(map);
