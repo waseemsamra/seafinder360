@@ -34,7 +34,7 @@ function VendorDispatchDetailContent() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/admin/vendor-dispatch/${encodeURIComponent(id)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/admin/vendor-dispatch/${id}?t=${Date.now()}`, { cache: 'no-store', headers: { 'cache-control': 'no-cache' } });
       const text = await res.text();
       try {
         const json = JSON.parse(text);
