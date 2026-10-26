@@ -12,7 +12,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       .from('vendor_dispatches')
       .select('*')
       .eq('id', params.id)
-      .single();
+      .maybeSingle();
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')

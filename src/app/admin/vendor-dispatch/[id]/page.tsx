@@ -32,7 +32,7 @@ function VendorDispatchDetailContent() {
 
   const fetchData = async () => {
     const supabase = createClient();
-    const { data: d } = await supabase.from('vendor_dispatches').select('*').eq('id', id).single();
+    const { data: d } = await supabase.from('vendor_dispatches').select('*').eq('id', id).maybeSingle();
     setDispatch(d);
     
     const { data: its } = await supabase.from('vendor_dispatch_items').select('*').eq('dispatch_id', id);
