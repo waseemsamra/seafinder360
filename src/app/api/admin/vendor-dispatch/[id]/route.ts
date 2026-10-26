@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
+    const id = params.id;
+    if (!id || id === 'undefined') {
+      return NextResponse.json({ dispatch: null, items: [], vendors: {} });
+    }
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -11,13 +15,13 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     const { data: dispatch, error: dErr } = await supabase
       .from('vendor_dispatches')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .maybeSingle();
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')
       .select('*')
-      .eq('dispatch_id', params.id);
+      .eq('dispatch_id', id);
     
     let vendors: any = {};
     if (items && items.length > 0) {
@@ -35,13 +39,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const body = await req.json();
+    const id = params.id;
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     
     if (body.action === 'approve') {
-      await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', params.id);
+      await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
       return NextResponse.json({ success: true });
     }
     
