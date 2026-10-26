@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader" style={{ position: 'fixed', top: scrolled ? 0 : 39, backdropFilter: 'blur(14px) saturate(180%)', WebkitBackdropFilter: 'blur(14px) saturate(180%)', background: scrolled ? '#ffffff' : 'rgba(255,255,255,0.7)' }}>
+      <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader" style={{ position: 'fixed', top: scrolled ? 0 : 39, backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', background: scrolled ? '#ffffff' : 'rgba(255,255,255,0.25)' }}>
         <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'110px', width:'auto', objectFit:'contain'}} /></a>
         <nav className="nav-menu">
           <a href="#" className="no-arrow">Home</a>
