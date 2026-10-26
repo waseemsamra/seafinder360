@@ -104,27 +104,29 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
     setTimeout(scrollToBottom, 100);
   };
 
-  const saveAnswer = async (step: number, question: string, answer: string, answerText: string) => {
+  const saveAnswer = (step: number, question: string, answer: string, answerText: string) => {
     const newAnswer = { step, question, answer, answerText };
     const updatedAnswers = [...answers, newAnswer];
     setAnswers(updatedAnswers);
     
     const supabase = createClient();
     if (sessionId) {
-      try {
-        await supabase.from('ai_concierge_responses').insert({
-          session_id: sessionId,
-          step,
-          question,
-          selected_option: answerText
-        });
-        
-        await supabase.from('ai_concierge_sessions')
-          .update({ answers: updatedAnswers, updated_at: new Date().toISOString() })
-          .eq('id', sessionId);
-      } catch (e) {
-        // ignore
-      }
+      (async () => {
+        try {
+          await supabase.from('ai_concierge_responses').insert({
+            session_id: sessionId,
+            step,
+            question,
+            selected_option: answerText
+          });
+          
+          await supabase.from('ai_concierge_sessions')
+            .update({ answers: updatedAnswers, updated_at: new Date().toISOString() })
+            .eq('id', sessionId);
+        } catch (e) {
+          // ignore
+        }
+      })();
     }
     return updatedAnswers;
   };
@@ -140,9 +142,9 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
     ]);
   };
 
-  const handleOption = async (opt: any, step: number, question: string) => {
+  const handleOption = (opt: any, step: number, question: string) => {
     addUserMessage(opt.text);
-    const updated = await saveAnswer(step, question, opt.value || opt.text, opt.text);
+    const updated = saveAnswer(step, question, opt.value || opt.text, opt.text);
     
     setTimeout(() => {
       if (opt.action === "guests") {
@@ -195,11 +197,13 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
       } else if (opt.action === "finish") {
         const supabase = createClient();
         if (sessionId) {
-          try {
-            await supabase.from('ai_concierge_sessions')
-              .update({ status: 'completed', answers: updated, summary: { yacht: yachtName, completed_at: new Date().toISOString() }, updated_at: new Date().toISOString() })
-              .eq('id', sessionId);
-          } catch (e) {}
+          (async () => {
+            try {
+              await supabase.from('ai_concierge_sessions')
+                .update({ status: 'completed', answers: updated, summary: { yacht: yachtName, completed_at: new Date().toISOString() }, updated_at: new Date().toISOString() })
+                .eq('id', sessionId);
+            } catch (e) {}
+          })();
         }
         setTimeout(() => {
           setShowSummary(true);
