@@ -203,30 +203,14 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
                 .update({ status: 'completed', answers: updated, summary: { yacht: yachtName, completed_at: new Date().toISOString() }, updated_at: new Date().toISOString() })
                 .eq('id', sessionId);
               
-              // Auto-dispatch to vendors
-              const { data: vendors } = await supabase.from('vendors').select('id').eq('is_active', true);
-              const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-              const { data: dispatch } = await supabase.from('vendor_dispatches').insert({
-                session_id: sessionId,
-                yacht_name: yachtName,
-                client_name: updated.find((a:any) => a.step === 7)?.answerText || null,
-                guests: parseInt(updated.find((a:any) => a.step === 2)?.answerText?.match(/\d+/)?.[0] || '0') || null,
-                duration: updated.find((a:any) => a.step === 1)?.answerText || null,
-                answers: updated,
-                preferences: {},
-                status: 'pending',
-                expires_at: expiresAt,
-                dispatched_at: new Date().toISOString()
-              }).select().single();
-              
-              if (dispatch && vendors && vendors.length > 0) {
-                const items = vendors.map((v: any) => ({
-                  dispatch_id: dispatch.id,
-                  vendor_id: v.id,
-                  token: crypto.randomUUID()
-                }));
-                await supabase.from('vendor_dispatch_items').insert(items);
-              }
+              // Auto-dispatch to vendors via server API
+              try {
+                await fetch('/api/ai-concierge/dispatch', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ sessionId, yachtName, answers: updated })
+                });
+              } catch (e) {}
             } catch (e) {}
           })();
         }
