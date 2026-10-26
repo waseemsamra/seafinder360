@@ -14,9 +14,20 @@ function VendorDispatchViewContent() {
   const [timeLeft, setTimeLeft] = useState(600);
   const [loading, setLoading] = useState(true);
 
+  const [allVendors, setAllVendors] = useState<any[]>([]);
+
   useEffect(() => {
     if (id) fetchData();
+    fetchAllVendors();
   }, [id]);
+
+  const fetchAllVendors = async () => {
+    try {
+      const supabase = createClient();
+      const { data } = await supabase.from('vendors').select('*').limit(20);
+      setAllVendors(data || []);
+    } catch (e) {}
+  };
 
   useEffect(() => {
     if (!dispatch?.expires_at || dispatch.status !== 'pending') return;
@@ -99,26 +110,38 @@ function VendorDispatchViewContent() {
           </div>
 
           <div style={{ padding: '30px' }}>
-            <h3 style={{ fontSize: '13px', color: '#6B7280', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>Vendors Notified ({items.length}) • Accepted: {acceptedCount} • Pending: {pendingCount} • Declined: {declinedCount}</h3>
-            {items.map((item: any) => {
-              const v = vendors[item.vendor_id];
-              if (item.status === 'accepted') {
-                return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #34D399', background: '#D1FAE5', marginBottom: '12px' }}>
-                  <div><div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div><div style={{ fontSize: '12px', color: '#065F46', marginTop: '4px' }}>Quote: AED {item.quote_price} {item.quote_notes && `• ${item.quote_notes}`}</div></div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#10B981' }}>✓ Accepted</div>
+            <h3 style={{ fontSize: '13px', color: '#6B7280', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>Vendors Notified ({items.length > 0 ? items.length : allVendors.length}) • Accepted: {acceptedCount} • Pending: {pendingCount} • Declined: {declinedCount} | items:{items.length} vendors:{Object.keys(vendors).length}</h3>
+            {items.length > 0 ? (
+              items.map((item: any) => {
+                const v = vendors[item.vendor_id];
+                if (item.status === 'accepted') {
+                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #34D399', background: '#D1FAE5', marginBottom: '12px' }}>
+                    <div><div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div><div style={{ fontSize: '12px', color: '#065F46', marginTop: '4px' }}>Quote: AED {item.quote_price} {item.quote_notes && `• ${item.quote_notes}`}</div></div>
+                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#10B981' }}>✓ Accepted</div>
+                  </div>
+                } else if (item.status === 'declined') {
+                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', marginBottom: '12px', opacity: 0.7 }}>
+                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
+                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#EF4444' }}>Unavailable</div>
+                  </div>
+                } else {
+                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FDE68A', background: '#FFFBEB', marginBottom: '12px' }}>
+                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
+                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#F59E0B' }}>⏱ Waiting...</div>
+                  </div>
+                }
+              })
+            ) : (
+              allVendors.map((v: any) => (
+                <div key={v.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#F9FAFB', marginBottom: '12px' }}>
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v.business_name || v.name}</div>
+                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{v.phone || v.email || ''}</div>
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280' }}>Not dispatched</div>
                 </div>
-              } else if (item.status === 'declined') {
-                return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', marginBottom: '12px', opacity: 0.7 }}>
-                  <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#EF4444' }}>Unavailable</div>
-                </div>
-              } else {
-                return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FDE68A', background: '#FFFBEB', marginBottom: '12px' }}>
-                  <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#F59E0B' }}>⏱ Waiting...</div>
-                </div>
-              }
-            })}
+              ))
+            )}
           </div>
 
           <div style={{ padding: '25px 30px', background: '#F9FAFB', borderTop: '1px solid #E5E7EB', textAlign: 'right' }}>

@@ -1,10 +1,12 @@
 "use client";
 
 import AdminLayout from "@/components/AdminLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function VendorsPage() {
   const [vendors, setVendors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -21,6 +23,71 @@ export default function VendorsPage() {
     status: "Pending"
   });
   const [pasteData, setPasteData] = useState("");
+
+  const fetchVendors = async () => {
+    try {
+      const res = await fetch('/api/admin/vendors', { cache: 'no-store' });
+      const json = await res.json();
+      const data = json.vendors || [];
+      if (data.length === 0) {
+        // fallback to client
+        const supabase = createClient();
+        const { data: cdata } = await supabase.from('vendors').select('*').order('created_at', { ascending: false });
+        const mapped = (cdata || []).map((v: any) => ({
+          id: v.id,
+          companyName: v.business_name || v.name || v.company_name || '',
+          contactPerson: v.contact_person || v.name || '',
+          email: v.email || '',
+          phone: v.phone || v.whatsapp || '',
+          category: v.type || v.category || 'Vendor',
+          location: v.location || '',
+          status: v.is_active ? 'Active' : (v.status || 'Active'),
+          joined: v.created_at ? new Date(v.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+          raw: v
+        }));
+        setVendors(mapped);
+        setLoading(false);
+        return;
+      }
+      const mapped = data.map((v: any) => ({
+        id: v.id,
+        companyName: v.business_name || v.name || v.company_name || '',
+        contactPerson: v.contact_person || v.name || '',
+        email: v.email || '',
+        phone: v.phone || v.whatsapp || '',
+        category: v.type || v.category || 'Vendor',
+        location: v.location || '',
+        status: v.is_active ? 'Active' : (v.status || 'Active'),
+        joined: v.created_at ? new Date(v.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+        raw: v
+      }));
+      setVendors(mapped);
+    } catch (e) {
+      console.error(e);
+      try {
+        const supabase = createClient();
+        const { data: cdata } = await supabase.from('vendors').select('*').order('created_at', { ascending: false });
+        const mapped = (cdata || []).map((v: any) => ({
+          id: v.id,
+          companyName: v.business_name || v.name || v.company_name || '',
+          contactPerson: v.contact_person || v.name || '',
+          email: v.email || '',
+          phone: v.phone || v.whatsapp || '',
+          category: v.type || v.category || 'Vendor',
+          location: v.location || '',
+          status: v.is_active ? 'Active' : (v.status || 'Active'),
+          joined: v.created_at ? new Date(v.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+          raw: v
+        }));
+        setVendors(mapped);
+      } catch (e2) {}
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchVendors();
+  }, []);
 
   const handleAddVendor = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,20 +183,25 @@ export default function VendorsPage() {
       <div className="search-bar"><input placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
       <div className="table-container">
         <table>
-          <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Category</th><th>Status</th><th>Joined</th><th style={{textAlign:'right'}}>Actions</th></tr></thead>
+          <thead><tr><th>Name/Company</th><th>Phone</th><th>Email</th><th>Category</th><th>Status</th><th>Joined</th><th style={{textAlign:'right'}}>Actions</th></tr></thead>
           <tbody>
-            {filtered.map((v: any) => (
-              <tr key={v.id}>
-                <td className="font-medium">{v.companyName}</td>
-                <td>{v.contactPerson}</td>
-                <td className="text-muted">{v.email}</td>
-                <td className="text-muted">{v.phone}</td>
-                <td>{v.category}</td>
-                <td><span className="badge">{v.status}</span></td>
-                <td className="text-muted">{v.joined}</td>
-                <td><div className="actions"><button className="btn-action btn-edit" onClick={() => handleEditVendor(v)}>Edit</button><button className="btn-action btn-delete" onClick={() => handleDelete(v.id)}>Delete</button></div></td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={7} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>Loading...</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={7} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>No vendors found</td></tr>
+            ) : (
+              filtered.map((v: any) => (
+                <tr key={v.id}>
+                  <td className="font-medium">{v.companyName}</td>
+                  <td className="text-muted">{v.phone}</td>
+                  <td className="text-muted">{v.email}</td>
+                  <td>{v.category}</td>
+                  <td><span className="badge">{v.status}</span></td>
+                  <td className="text-muted">{v.joined}</td>
+                  <td><div className="actions"><button className="btn-action btn-edit" onClick={() => handleEditVendor(v)}>Edit</button><button className="btn-action btn-delete" onClick={() => handleDelete(v.id)}>Delete</button></div></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

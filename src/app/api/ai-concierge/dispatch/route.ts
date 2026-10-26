@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
     
-    const { data: vendors } = await supabase.from('vendors').select('id').eq('is_active', true);
+    const { data: vendors } = await supabase.from('vendors').select('id').eq('is_active', true).limit(10);
     
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
     
