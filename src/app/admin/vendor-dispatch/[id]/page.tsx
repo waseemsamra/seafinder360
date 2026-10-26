@@ -31,19 +31,14 @@ function VendorDispatchDetailContent() {
   }, [dispatch]);
 
   const fetchData = async () => {
-    const supabase = createClient();
-    const { data: d } = await supabase.from('vendor_dispatches').select('*').eq('id', id).maybeSingle();
-    setDispatch(d);
-    
-    const { data: its } = await supabase.from('vendor_dispatch_items').select('*').eq('dispatch_id', id);
-    setItems(its || []);
-    
-    if (its && its.length > 0) {
-      const vendorIds = its.map((i: any) => i.vendor_id);
-      const { data: vs } = await supabase.from("vendors").select("*").in("id", vendorIds);
-      const map: any = {};
-      (vs || []).forEach((v: any) => { map[v.id] = v; });
-      setVendors(map);
+    try {
+      const res = await fetch(`/api/admin/vendor-dispatch/${id}`, { cache: 'no-store' });
+      const json = await res.json();
+      setDispatch(json.dispatch);
+      setItems(json.items || []);
+      setVendors(json.vendors || {});
+    } catch (e) {
+      setDispatch(null);
     }
     setLoading(false);
   };
