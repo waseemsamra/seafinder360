@@ -2,7 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS vendor_dispatches (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  session_id UUID REFERENCES ai_concierge_sessions(id) ON DELETE CASCADE,
+  session_id UUID,
   yacht_id TEXT,
   yacht_name TEXT,
   client_name TEXT,
@@ -47,3 +47,7 @@ ALTER TABLE vendors ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
 CREATE INDEX IF NOT EXISTS idx_vendor_dispatch_items_token ON vendor_dispatch_items(token);
 CREATE INDEX IF NOT EXISTS idx_vendor_dispatch_items_dispatch_id ON vendor_dispatch_items(dispatch_id);
 CREATE INDEX IF NOT EXISTS idx_vendor_dispatches_session_id ON vendor_dispatches(session_id);
+
+-- Disable RLS for now
+ALTER TABLE vendor_dispatches DISABLE ROW LEVEL SECURITY;
+ALTER TABLE vendor_dispatch_items DISABLE ROW LEVEL SECURITY;
