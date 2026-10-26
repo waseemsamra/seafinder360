@@ -87,7 +87,7 @@ function VendorDispatchDetailContent() {
   };
 
   if (loading) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Loading...</div></AdminLayout>;
-  if (!dispatch) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Not found</div></AdminLayout>;
+  if (!dispatch) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Loading or Not found</div></AdminLayout>;
 
   const acceptedCount = items.filter((i: any) => i.status === 'accepted').length;
   const pendingCount = items.filter((i: any) => i.status === 'pending').length;
