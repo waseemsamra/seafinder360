@@ -76,7 +76,7 @@ export default function AIConciergeSummary({ isOpen, onClose, answers, yachtName
         </div>
 
         <div className="summary-footer">
-          <button className="btn btn-secondary" onClick={onClose}>
+          <button className="btn btn-secondary" onClick={() => { onClose(); window.location.reload(); }}>
             Edit Preferences
           </button>
           <button className="btn btn-primary" onClick={() => {

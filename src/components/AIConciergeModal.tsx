@@ -202,6 +202,33 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
               await supabase.from('ai_concierge_sessions')
                 .update({ status: 'completed', answers: updated, summary: { yacht: yachtName, completed_at: new Date().toISOString() }, updated_at: new Date().toISOString() })
                 .eq('id', sessionId);
+              
+              // Auto-dispatch to vendors
+              const { data: vendors } = await supabase.from('vendors').select('id').eq('is_active', true);
+              if (vendors && vendors.length > 0) {
+                const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+                const { data: dispatch } = await supabase.from('vendor_dispatches').insert({
+                  session_id: sessionId,
+                  yacht_name: yachtName,
+                  client_name: updated.find((a:any) => a.step === 7)?.answerText || null,
+                  guests: parseInt(updated.find((a:any) => a.step === 2)?.answerText?.match(/\d+/)?.[0] || '0') || null,
+                  duration: updated.find((a:any) => a.step === 1)?.answerText || null,
+                  answers: updated,
+                  preferences: {},
+                  status: 'pending',
+                  expires_at: expiresAt,
+                  dispatched_at: new Date().toISOString()
+                }).select().single();
+                
+                if (dispatch) {
+                  const items = vendors.map((v: any) => ({
+                    dispatch_id: dispatch.id,
+                    vendor_id: v.id,
+                    token: crypto.randomUUID()
+                  }));
+                  await supabase.from('vendor_dispatch_items').insert(items);
+                }
+              }
             } catch (e) {}
           })();
         }
@@ -328,7 +355,7 @@ export default function AIConciergeModal({ isOpen, onClose, yacht }: AIConcierge
 
       <AIConciergeSummary 
         isOpen={showSummary} 
-        onClose={() => { setShowSummary(false); onClose(); }} 
+        onClose={() => { setShowSummary(false); setMessages([]); setAnswers([]); if (sessionId) { const supabase = createClient(); supabase.from('ai_concierge_sessions').update({ status: 'in_progress' }).eq('id', sessionId); } setTimeout(() => { initFlow(); }, 100); }} 
         answers={answers} 
         yachtName={yachtName}
         sessionId={sessionId || ''}
