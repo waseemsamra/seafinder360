@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import AdminLayout from "@/components/AdminLayout";
 import { createClient } from "@/lib/supabase/client";
-import { useParams } from "next/navigation";
 
-export default function VendorDispatchDetailPage() {
+function VendorDispatchDetailContent() {
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
   const [dispatch, setDispatch] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [vendors, setVendors] = useState<any>({});
@@ -15,13 +15,13 @@ export default function VendorDispatchDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    if (id) fetchData();
   }, [id]);
 
   useEffect(() => {
     if (!dispatch?.expires_at || dispatch.status !== 'pending') return;
     const interval = setInterval(() => {
-      const diff = new Date(dispatch.expires_at).getTime() - Date.now();
+      const diff = new new Date(dispatch.expires_at).getTime() - Date.now();
       setTimeLeft(Math.max(0, Math.floor(diff / 1000)));
       if (diff <= 0) {
         clearInterval(interval);
@@ -40,7 +40,7 @@ export default function VendorDispatchDetailPage() {
     
     if (its && its.length > 0) {
       const vendorIds = its.map((i: any) => i.vendor_id);
-      const { data: vs } = await supabase.from('vendors').select('*').in('id', vendorIds);
+      const { data: vs } = await supabase.from('vendors').select('*).in('id', vendorIds);
       const map: any = {};
       (vs || []).forEach((v: any) => { map[v.id] = v; });
       setVendors(map);
@@ -58,7 +58,6 @@ export default function VendorDispatchDetailPage() {
     const supabase = createClient();
     await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
     
-    // Send WhatsApp to client
     const summaryText = (dispatch.answers || [])
       .filter((a: any) => a.step >=1 && a.step <=6)
       .map((a: any, i: number) => `${i+1}. ${a.question?.replace(/^\d+\.\s*/, '')}: ${a.answerText || a.answer}`)
@@ -90,7 +89,7 @@ export default function VendorDispatchDetailPage() {
 
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '24px' }}>
           <div style={{ background: '#1A222C', padding: '25px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '10px' }}>🚨 New Booking Request</h2>
+            <h2 style={{ fontSize: '20px', fontWeight: '600' }}>New Booking Request</h2>
             {dispatch.status === 'pending' && timeLeft > 0 ? (
               <div style={{ background: '#EF4444', padding: '8px 16px', borderRadius: '20px', fontWeight: '700', fontSize: '14px' }}>{formatTime(timeLeft)}</div>
             ) : dispatch.status === 'pending' && timeLeft <= 0 ? (
@@ -116,7 +115,7 @@ export default function VendorDispatchDetailPage() {
               if (status === 'accepted') {
                 return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #34D399', background: '#D1FAE5', marginBottom: '12px' }}>
                   <div><div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div><div style={{ fontSize: '12px', color: '#065F46', marginTop: '4px' }}>Quote: AED {item.quote_price} {item.quote_notes && `• ${item.quote_notes}`}</div></div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px', color: '#10B981' }}>✓ Accepted</div>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#10B981' }}>✓ Accepted</div>
                 </div>
               } else if (status === 'declined') {
                 return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', marginBottom: '12px', opacity: 0.7 }}>
@@ -126,7 +125,7 @@ export default function VendorDispatchDetailPage() {
               } else {
                 return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FDE68A', background: '#FFFBEB', marginBottom: '12px' }}>
                   <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px', color: '#F59E0B' }}>⏱ Waiting...</div>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#F59E0B' }}>⏱ Waiting...</div>
                 </div>
               }
             })}
@@ -144,5 +143,13 @@ export default function VendorDispatchDetailPage() {
         </div>
       </div>
     </AdminLayout>
+  );
+}
+
+export default function VendorDispatchDetailPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '40px' }}>Loading...</div>}>
+      <VendorDispatchDetailContent />
+    </Suspense>
   );
 }
