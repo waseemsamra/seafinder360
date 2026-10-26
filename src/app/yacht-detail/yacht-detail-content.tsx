@@ -8,6 +8,7 @@ import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
+import AIConciergeModal from "@/components/AIConciergeModal";
 
 const amenityList = [
   { icon: "ac", label: "Air conditioning" },
@@ -41,6 +42,7 @@ export default function YachtDetailContent() {
   const id = searchParams.get("id");
   const [yacht, setYacht] = useState<any>(null);
   const [activeImg, setActiveImg] = useState(0);
+  const [showConcierge, setShowConcierge] = useState(false);
 
   useEffect(() => {
     const fetchYacht = async () => {
@@ -82,14 +84,14 @@ export default function YachtDetailContent() {
     <>
       <TopBar />
       <Header />
-      <main style={{ paddingTop: "0px", background: "#fff" }}>
-        <nav style={{ padding: "15px 5%", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", maxWidth: "1200px", margin: "0 auto" }}>
+      <main style={{ paddingTop: "140px", background: "#fff" }}>
+        <nav style={{ padding: "15px 5%", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", maxWidth: "1200px", margin: "0 auto", marginTop: "20px" }}>
           <Link href="/" style={{ color: "#6B7280" }}>Home</Link> <span>/</span>
           <Link href="/search" style={{ color: "#6B7280" }}>Hourly Charters</Link> <span>/</span>
           <span style={{ color: "#1A222C", fontWeight: 600 }}>{yacht.name}</span>
         </nav>
 
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr 380px", gap: "40px", alignItems: "start" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr 380px", gap: "40px", alignItems: "start", position: "relative" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", height: "450px" }}>
               <img src={displayImages[activeImg]} alt={yacht.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -179,8 +181,8 @@ export default function YachtDetailContent() {
             </div>
           </div>
 
-          <div>
-            <div style={{ background: "#1A222C", color: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", position: "sticky", top: "100px" }}>
+            <div style={{ position: "sticky", top: "140px", alignSelf: "start" }}>
+              <div style={{ background: "#1A222C", color: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "25px", paddingBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                 <div>
                   <div style={{ fontSize: "12px", color: "#ccc", textTransform: "uppercase" }}>Starting from</div>
@@ -217,18 +219,19 @@ export default function YachtDetailContent() {
                 </div>
               </div>
 
-              <button onClick={() => (window.location.href = "/checkout")} style={{ width: "100%", padding: "16px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", marginTop: "10px" }}>Book Now</button>
+              <button onClick={() => setShowConcierge(true)} style={{ width: "100%", padding: "16px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", marginTop: "10px" }}>Book Now</button>
 
               <div style={{ marginTop: "20px", textAlign: "center", fontSize: "12px", color: "#888", display: "flex", justifyContent: "center", gap: "15px" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>Secure Booking</span>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>Free Cancellation</span>
               </div>
+              </div>
             </div>
           </div>
-        </div>
       </main>
       <Footer />
       <FloatingButtons />
+      <AIConciergeModal isOpen={showConcierge} onClose={() => setShowConcierge(false)} yacht={yacht} />
       <style jsx>{`
         @media (max-width: 992px) {
           main > div { grid-template-columns: 1fr !important; }

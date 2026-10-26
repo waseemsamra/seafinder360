@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import AIConciergeModal from "./AIConciergeModal";
 
 const sectionConfig = [
   { id: "charter", title: "Luxury Yacht Charters", subtitle: "Experience the finest fleet in Dubai with private chefs and premium crews." },
@@ -12,6 +13,8 @@ const sectionConfig = [
 
 export default function YachtCarousels() {
   const [yachts, setYachts] = useState<any[]>([]);
+  const [showConcierge, setShowConcierge] = useState(false);
+  const [selectedYacht, setSelectedYacht] = useState<any>(null);
 
   useEffect(() => {
     const fetchYachts = async () => {
@@ -60,6 +63,7 @@ export default function YachtCarousels() {
   return (
     <div style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+      <AIConciergeModal isOpen={showConcierge} onClose={() => setShowConcierge(false)} yacht={selectedYacht} />
       {sectionConfig.map((section, idx) => {
         const sectionYachts = getYachtsForSection(idx);
         if (sectionYachts.length === 0) return null;
@@ -92,8 +96,8 @@ export default function YachtCarousels() {
                   key={idxCard}
                   onClick={() => handleCardClick(yacht)}
                   style={{
-                    minWidth: "280px",
-                    maxWidth: "85%",
+                  minWidth: "260px",
+                  maxWidth: "85%",
                     scrollSnapAlign: "start",
                     backgroundColor: "#FFFFFF",
                     display: "flex",
@@ -105,10 +109,13 @@ export default function YachtCarousels() {
                     <img src={yacht.img} alt={yacht.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   </div>
                   <div style={{ padding: "16px 0 8px 0", display: "flex", flexDirection: "column" }}>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1.8px", color: "#2C7A7B", fontWeight: 500, marginBottom: "10px" }}>{yacht.loc}</div>
-                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 400, color: "#1A222C", margin: "0 0 6px 0", letterSpacing: "0.5px" }}>{yacht.name.toUpperCase()}</h3>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#6B7280", fontWeight: 300, marginBottom: "12px" }}>{yacht.specs}</div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#374151", fontWeight: 400 }}>{yacht.price}</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1.8px", color: "#2C7A7B", fontWeight: 500, marginBottom: "8px" }}>{yacht.loc}</div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: 600, color: "#1A222C", margin: "0 0 4px 0", letterSpacing: "0.5px", textTransform: "uppercase" }}>{yacht.name.toUpperCase()}</h3>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#6B7280", fontWeight: 300, marginBottom: "10px" }}>{yacht.specs}</div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#374151", fontWeight: 600 }}>{yacht.price}</div>
+                    <button onClick={(e) => { e.stopPropagation(); setSelectedYacht(yacht); setShowConcierge(true); }} style={{ fontSize: "9px", padding: "4px 8px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "4px", fontWeight: 600, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.5px" }}>Ask Expert</button>
+                  </div>
                   </div>
                 </div>
               ))}
