@@ -1,5 +1,18 @@
 -- Vendor Dispatch Tables
 
+CREATE TABLE IF NOT EXISTS vendors (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  business_name TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  whatsapp TEXT,
+  type TEXT DEFAULT 'yacht_rental',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS vendor_dispatches (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   session_id UUID,
@@ -39,7 +52,6 @@ CREATE TABLE IF NOT EXISTS vendor_dispatch_items (
   UNIQUE(dispatch_id, vendor_id)
 );
 
--- Add columns to vendors if missing
 ALTER TABLE vendors ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'yacht_rental';
 ALTER TABLE vendors ADD COLUMN IF NOT EXISTS whatsapp TEXT;
 ALTER TABLE vendors ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
@@ -48,6 +60,5 @@ CREATE INDEX IF NOT EXISTS idx_vendor_dispatch_items_token ON vendor_dispatch_it
 CREATE INDEX IF NOT EXISTS idx_vendor_dispatch_items_dispatch_id ON vendor_dispatch_items(dispatch_id);
 CREATE INDEX IF NOT EXISTS idx_vendor_dispatches_session_id ON vendor_dispatches(session_id);
 
--- Disable RLS for now
 ALTER TABLE vendor_dispatches DISABLE ROW LEVEL SECURITY;
 ALTER TABLE vendor_dispatch_items DISABLE ROW LEVEL SECURITY;
