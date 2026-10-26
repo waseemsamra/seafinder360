@@ -1,13 +1,13 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import AdminLayout from "@/components/AdminLayout";
 import { createClient } from "@/lib/supabase/client";
 
-function VendorDispatchDetailContent() {
-  const params = useParams();
-  const id = params?.id as string;
+function VendorDispatchViewContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
   const [dispatch, setDispatch] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [vendors, setVendors] = useState<any>({});
@@ -15,9 +15,7 @@ function VendorDispatchDetailContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id && id !== 'undefined') {
-      fetchData();
-    }
+    if (id) fetchData();
   }, [id]);
 
   useEffect(() => {
@@ -25,25 +23,18 @@ function VendorDispatchDetailContent() {
     const interval = setInterval(() => {
       const diff = new Date(dispatch.expires_at).getTime() - Date.now();
       setTimeLeft(Math.max(0, Math.floor(diff / 1000)));
-      if (diff <= 0) {
-        clearInterval(interval);
-      }
+      if (diff <= 0) clearInterval(interval);
     }, 1000);
     return () => clearInterval(interval);
   }, [dispatch]);
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/admin/vendor-dispatch/${id}?t=${Date.now()}`, { cache: 'no-store', headers: { 'cache-control': 'no-cache' } });
-      const text = await res.text();
-      try {
-        const json = JSON.parse(text);
-        setDispatch(json.dispatch);
-        setItems(json.items || []);
-        setVendors(json.vendors || {});
-      } catch {
-        setDispatch(null);
-      }
+      const res = await fetch(`/api/admin/vendor-dispatch/${id}?t=${Date.now()}`, { cache: 'no-store' });
+      const json = await res.json();
+      setDispatch(json.dispatch);
+      setItems(json.items || []);
+      setVendors(json.vendors || {});
     } catch (e) {
       setDispatch(null);
     }
@@ -59,7 +50,6 @@ function VendorDispatchDetailContent() {
   const handleApprove = async () => {
     const supabase = createClient();
     await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
-    
     const summaryText = (dispatch.answers || [])
       .filter((a: any) => a.step >=1 && a.step <=6)
       .map((a: any, i: number) => `${i+1}. ${a.question?.replace(/^\d+\.\s*/, '')}: ${a.answerText || a.answer}`)
@@ -68,13 +58,12 @@ function VendorDispatchDetailContent() {
     if (dispatch.client_phone) {
       window.open(`https://wa.me/${dispatch.client_phone.replace(/[^0-9]/g,'')}?text=${message}`, '_blank');
     }
-    
     await supabase.from('vendor_dispatches').update({ whatsapp_sent_to_client: true }).eq('id', id);
     fetchData();
   };
 
   if (loading) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Loading...</div></AdminLayout>;
-  if (!dispatch) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Loading or Not found</div></AdminLayout>;
+  if (!dispatch) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Not found</div></AdminLayout>;
 
   const acceptedCount = items.filter((i: any) => i.status === 'accepted').length;
   const pendingCount = items.filter((i: any) => i.status === 'pending').length;
@@ -86,7 +75,7 @@ function VendorDispatchDetailContent() {
         <div style={{ marginBottom: '32px' }}>
           <a href="/admin/vendor-dispatch" style={{ color: '#C4A87C', textDecoration: 'none', fontSize: '14px' }}>← Back to Vendor Dispatch</a>
           <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1A222C', fontFamily: "'Playfair Display', serif", marginTop: '12px', marginBottom: '4px' }}>Vendor Response</h1>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Request #{dispatch.id.slice(0, 8).toUpperCase()}</p>
+          <p style={{ color: '#6B7280', fontSize: '14px' }}>Request #{id.slice(0, 8).toUpperCase()}</p>
         </div>
 
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '24px' }}>
@@ -110,16 +99,14 @@ function VendorDispatchDetailContent() {
 
           <div style={{ padding: '30px' }}>
             <h3 style={{ fontSize: '13px', color: '#6B7280', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>Vendors Notified ({items.length}) • Accepted: {acceptedCount} • Pending: {pendingCount} • Declined: {declinedCount}</h3>
-            
             {items.map((item: any) => {
               const v = vendors[item.vendor_id];
-              const status = item.status;
-              if (status === 'accepted') {
+              if (item.status === 'accepted') {
                 return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #34D399', background: '#D1FAE5', marginBottom: '12px' }}>
                   <div><div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div><div style={{ fontSize: '12px', color: '#065F46', marginTop: '4px' }}>Quote: AED {item.quote_price} {item.quote_notes && `• ${item.quote_notes}`}</div></div>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#10B981' }}>✓ Accepted</div>
                 </div>
-              } else if (status === 'declined') {
+              } else if (item.status === 'declined') {
                 return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', marginBottom: '12px', opacity: 0.7 }}>
                   <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#EF4444' }}>Unavailable</div>
@@ -148,10 +135,10 @@ function VendorDispatchDetailContent() {
   );
 }
 
-export default function VendorDispatchDetailPage() {
+export default function VendorDispatchViewPage() {
   return (
     <Suspense fallback={<div style={{ padding: '40px' }}>Loading...</div>}>
-      <VendorDispatchDetailContent />
+      <VendorDispatchViewContent />
     </Suspense>
   );
 }

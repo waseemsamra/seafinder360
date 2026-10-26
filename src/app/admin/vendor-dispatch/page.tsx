@@ -105,7 +105,7 @@ export default function VendorDispatchListPage() {
                         <span style={{ padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', background: badge.bg, color: badge.color }}>{badge.text}</span>
                       </td>
                       <td style={{ padding: '16px 24px' }}>
-                        <Link href={`/admin/vendor-dispatch/${d.id}`} style={{ color: '#C4A87C', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>View Responses →</Link>
+                        <Link href={`/admin/vendor-dispatch/view?id=${d.id}`} style={{ color: '#C4A87C', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>View Responses →</Link>
                       </td>
                     </tr>
                   );
