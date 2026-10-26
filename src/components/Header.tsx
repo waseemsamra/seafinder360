@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader">
+      <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader" style={{ position: 'static' }}>
         <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'110px', width:'auto', objectFit:'contain'}} /></a>
         <nav className="nav-menu">
           <a href="#" className="no-arrow">Home</a>
@@ -55,7 +55,7 @@ export default function Header() {
       </header>
       <div className={`menu-overlay${mobileOpen ? " active" : ""}`} onClick={() => setMobileOpen(false)} />
       <div className={`mobile-menu${mobileOpen ? " active" : ""}`}>
-        <a href="#">Home</a><a href="#fleet">Yacht Charter</a><a href="#fleet">Yacht Brokerage</a><a href="#services">Marine Services</a><a href="#contact">Contact Us</a>
+        <a href="/">Home</a><a href="/#charter">Yacht Charter</a><a href="/#party">Party & Events</a><a href="/#corporate">Corporate</a><a href="/#family">Family</a><a href="/#watersports">Watersports</a><a href="/search">Search Yachts</a>
       </div>
     </>
   );

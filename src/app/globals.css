@@ -80,7 +80,7 @@ img { max-width: 100%; display: block; }
 
 @media (max-width: 1080px) {
   .nav-menu { display: none; }
-  .hamburger { display: flex; }
+  .hamburger { display: flex !important; }
   .call-expert { display: none; }
   .lang-dropdown { display: none; }
   .btn-whatsapp { padding: 10px 16px; font-size: 11px; }
@@ -102,13 +102,13 @@ img { max-width: 100%; display: block; }
   .social-icons {
     margin-left: 0;
   }
-  .logo img { height: 45px !important; }
+  .logo img { height: 70px !important; }
   .header.scrolled {
     top: 0;
-    padding: 10px 4%;
+    padding: 8px 4%;
   }
-  .logo { height: 50px; }
-  .logo img { height: 50px !important; }
+  .logo { height: 70px; }
+  .logo img { height: 70px !important; }
   .btn-whatsapp {
     display: none;
   }
