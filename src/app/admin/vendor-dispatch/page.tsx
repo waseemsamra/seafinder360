@@ -22,8 +22,19 @@ export default function VendorDispatchListPage() {
 
   useEffect(() => {
     fetchDispatches();
-    const interval = setInterval(fetchDispatches, 15000);
-    return () => clearInterval(interval);
+    const supabase = createClient();
+    const channel = supabase
+      .channel('vendor_dispatch_list')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'vendor_dispatches' }, () => {
+        fetchDispatches();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'vendor_dispatch_items' }, () => {
+        fetchDispatches();
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const getStatusBadge = (status: string) => {

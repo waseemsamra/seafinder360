@@ -12,11 +12,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     
-    const { data: dispatch, error: dErr } = await supabase
+    const { data: dispatchRows, error: dErr } = await supabase
       .from('vendor_dispatches')
       .select('*')
-      .eq('id', id)
-      .maybeSingle();
+      .eq('id', id);
+    
+    const dispatch = dispatchRows && dispatchRows.length > 0 ? dispatchRows[0] : null;
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')
