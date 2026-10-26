@@ -31,7 +31,7 @@ function VendorDispatchViewContent() {
   const fetchData = async () => {
     if (!id) { setLoading(false); return; }
     try {
-      const res = await fetch(`/api/admin/vendor-dispatch/${id}?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`/api/admin/vendor-dispatch/${id}`, { cache: 'no-store' });
       const json = await res.json();
       setDispatch(json.dispatch);
       setItems(json.items || []);

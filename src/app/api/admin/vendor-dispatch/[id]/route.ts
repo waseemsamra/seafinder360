@@ -1,58 +1,23 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-export async function GET(req: Request, context: any) {
-  try {
-    const id = context.params.id;
-    if (!id || id === 'undefined') {
-      return NextResponse.json({ dispatch: null, items: [], vendors: {} }, { headers: { 'Cache-Control': 'no-store' } });
-    }
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-    
-    const { data: dispatchRows } = await supabase
-      .from('vendor_dispatches')
-      .select('*')
-      .eq('id', id);
-    
-    const dispatch = Array.isArray(dispatchRows) && dispatchRows.length > 0 ? dispatchRows[0] : null;
-    
-    const { data: items } = await supabase
-      .from('vendor_dispatch_items')
-      .select('*')
-      .eq('dispatch_id', id);
-    
-    let vendors: any = {};
-    if (items && items.length > 0) {
-      const vendorIds = items.map((i: any) => i.vendor_id);
-      const { data: vs } = await supabase.from('vendors').select('*').in('id', vendorIds);
-      (vs || []).forEach((v: any) => { vendors[v.id] = v; });
-    }
-    
-    return NextResponse.json({ dispatch, items: items || [], vendors }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (e: any) {
-    return NextResponse.json({ dispatch: null, items: [], vendors: {}, error: e.message }, { status: 200 });
+export async function GET(req: Request, { params }: any) {
+  const id = params?.id;
+  if (!id) {
+    return NextResponse.json({ dispatch: null, items: [], vendors: {} }, { headers: { 'Cache-Control': 'no-store' } });
   }
-}
-
-export async function POST(req: Request, context: any) {
-  try {
-    const body = await req.json();
-    const id = context.params.id;
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-    
-    if (body.action === 'approve') {
-      await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
-      return NextResponse.json({ success: true });
-    }
-    
-    return NextResponse.json({ success: false });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  const { data } = await supabase.from('vendor_dispatches').select('*').eq('id', id);
+  const dispatch = data && data[0] ? data[0] : null;
+  const { data: items } = await supabase.from('vendor_dispatch_items').select('*').eq('dispatch_id', dispatch?.id || id);
+  const vendors: any = {};
+  if (items && items.length > 0) {
+    const ids = items.map((i:any)=>i.vendor_id);
+    const { data: vs } = await supabase.from('vendors').select('*').in('id', ids);
+    (vs||[]).forEach((v:any)=>{vendors[v.id]=v;});
   }
+  return NextResponse.json({ dispatch, items: items||[], vendors }, { headers: { 'Cache-Control': 'no-store' } });
 }
