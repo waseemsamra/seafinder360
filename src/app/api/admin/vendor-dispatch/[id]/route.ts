@@ -8,7 +8,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     
-    const { data: dispatch } = await supabase
+    const { data: dispatch, error: dErr } = await supabase
       .from('vendor_dispatches')
       .select('*')
       .eq('id', params.id)
@@ -26,7 +26,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       (vs || []).forEach((v: any) => { vendors[v.id] = v; });
     }
     
-    return NextResponse.json({ dispatch, items: items || [], vendors });
+    return NextResponse.json({ dispatch, items: items || [], vendors, dErr });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
