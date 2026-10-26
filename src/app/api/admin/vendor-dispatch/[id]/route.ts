@@ -17,12 +17,12 @@ export async function GET(req: Request, context: any) {
       .select('*')
       .eq('id', id);
     
-    let dispatch = dispatchRows && dispatchRows.length > 0 ? dispatchRows[0] : null;
+    const dispatch = Array.isArray(dispatchRows) && dispatchRows.length > 0 ? dispatchRows[0] : null;
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')
       .select('*')
-      .eq('dispatch_id', dispatch ? dispatch.id : id);
+      .eq('dispatch_id', id);
     
     let vendors: any = {};
     if (items && items.length > 0) {
@@ -33,7 +33,7 @@ export async function GET(req: Request, context: any) {
     
     return NextResponse.json({ dispatch, items: items || [], vendors }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ dispatch: null, items: [], vendors: {}, error: e.message }, { status: 200 });
   }
 }
 

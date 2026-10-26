@@ -73,9 +73,9 @@ function VendorDispatchViewContent() {
     <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch">
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ marginBottom: '32px' }}>
-          <a href="/admin/vendor-dispatch" style={{ color: '#C4A87C', textDecoration: 'none', fontSize: '14px' }}>← Back to Vendor Dispatch</a>
-          <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1A222C', fontFamily: "'Playfair Display', serif", marginTop: '12px', marginBottom: '4px' }}>Vendor Response</h1>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Request #{id.slice(0, 8).toUpperCase()}</p>
+        <a href="/admin/vendor-dispatch" style={{ color: '#C4A87C', textDecoration: 'none', fontSize: '14px' }}>← Back to Vendor Dispatch</a>
+        <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1A222C', fontFamily: "'Playfair Display', serif", marginTop: '12px', marginBottom: '4px' }}>Vendor Response</h1>
+        <p style={{ color: '#6B7280', fontSize: '14px' }}>Request #{id ? id.slice(0, 8).toUpperCase() : ''}</p>
         </div>
 
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '24px' }}>
