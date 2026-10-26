@@ -5,7 +5,7 @@ export async function GET(req: Request, context: any) {
   try {
     const id = context.params.id;
     if (!id || id === 'undefined') {
-      return NextResponse.json({ dispatch: null, items: [], vendors: {} });
+      return NextResponse.json({ dispatch: null, items: [], vendors: {} }, { headers: { 'Cache-Control': 'no-store' } });
     }
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,16 +17,12 @@ export async function GET(req: Request, context: any) {
       .select('*')
       .eq('id', id);
     
-    if (!dispatchRows || dispatchRows.length === 0) {
-      return NextResponse.json({ dispatch: null, items: [], vendors: {} });
-    }
-    
-    const dispatch = dispatchRows[0];
+    let dispatch = dispatchRows && dispatchRows.length > 0 ? dispatchRows[0] : null;
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')
       .select('*')
-      .eq('dispatch_id', dispatch?.id || id);
+      .eq('dispatch_id', dispatch ? dispatch.id : id);
     
     let vendors: any = {};
     if (items && items.length > 0) {
@@ -35,7 +31,7 @@ export async function GET(req: Request, context: any) {
       (vs || []).forEach((v: any) => { vendors[v.id] = v; });
     }
     
-    return NextResponse.json({ dispatch, items: items || [], vendors });
+    return NextResponse.json({ dispatch, items: items || [], vendors }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
