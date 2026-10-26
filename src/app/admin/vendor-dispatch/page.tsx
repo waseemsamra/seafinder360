@@ -9,19 +9,22 @@ export default function VendorDispatchListPage() {
   const [dispatches, setDispatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDispatches();
-  }, []);
-
   const fetchDispatches = async () => {
-    const supabase = createClient();
-    const { data } = await supabase
-      .from('vendor_dispatches')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setDispatches(data || []);
+    try {
+      const res = await fetch('/api/admin/vendor-dispatch', { cache: 'no-store' });
+      const json = await res.json();
+      setDispatches(json.data || []);
+    } catch (e) {
+      setDispatches([]);
+    }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDispatches();
+    const interval = setInterval(fetchDispatches, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getStatusBadge = (status: string) => {
     if (status === 'approved') return { bg: '#D1FAE5', color: '#065F46', text: 'Approved' };
