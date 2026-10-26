@@ -53,7 +53,7 @@ img { max-width: 100%; display: block; }
 .btn-whatsapp { position: relative; overflow: hidden; background-color: var(--gold); color: var(--white); padding: 12px 20px; border-radius: 2px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: all 0.4s var(--ease); }
 .btn-whatsapp:hover { background-color: var(--gold-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(196, 168, 124, 0.4); }
 .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 200; }
-.hamburger span { width: 25px; height: 2px; background-color: var(--white); transition: all 0.3s var(--ease); }
+.hamburger span { width: 25px; height: 2px; background-color: #1A222C; transition: all 0.3s var(--ease); }
 .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
 .hamburger.active span:nth-child(2) { opacity: 0; }
 .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
