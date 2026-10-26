@@ -17,19 +17,6 @@ function VendorDispatchDetailContent() {
   useEffect(() => {
     if (id && id !== 'undefined') {
       fetchData();
-      const supabase = createClient();
-      const channel = supabase
-        .channel(`vendor_dispatch_detail_${id}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'vendor_dispatch_items', filter: `dispatch_id=eq.${id}` }, () => {
-          fetchData();
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'vendor_dispatches', filter: `id=eq.${id}` }, () => {
-          fetchData();
-        })
-        .subscribe();
-      return () => {
-        supabase.removeChannel(channel);
-      };
     }
   }, [id]);
 
