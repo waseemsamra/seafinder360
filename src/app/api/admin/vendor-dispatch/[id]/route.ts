@@ -1,28 +1,32 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, context: any) {
   try {
-    const id = params.id;
+    const id = context.params.id;
     if (!id || id === 'undefined') {
       return NextResponse.json({ dispatch: null, items: [], vendors: {} });
     }
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
     
-    const { data: dispatchRows, error: dErr } = await supabase
+    const { data: dispatchRows } = await supabase
       .from('vendor_dispatches')
       .select('*')
       .eq('id', id);
     
-    const dispatch = dispatchRows && dispatchRows.length > 0 ? dispatchRows[0] : null;
+    if (!dispatchRows || dispatchRows.length === 0) {
+      return NextResponse.json({ dispatch: null, items: [], vendors: {} });
+    }
+    
+    const dispatch = dispatchRows[0];
     
     const { data: items } = await supabase
       .from('vendor_dispatch_items')
       .select('*')
-      .eq('dispatch_id', id);
+      .eq('dispatch_id', dispatch?.id || id);
     
     let vendors: any = {};
     if (items && items.length > 0) {
@@ -31,19 +35,19 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       (vs || []).forEach((v: any) => { vendors[v.id] = v; });
     }
     
-    return NextResponse.json({ dispatch, items: items || [], vendors, dErr });
+    return NextResponse.json({ dispatch, items: items || [], vendors });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, context: any) {
   try {
     const body = await req.json();
-    const id = params.id;
+    const id = context.params.id;
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
     
     if (body.action === 'approve') {

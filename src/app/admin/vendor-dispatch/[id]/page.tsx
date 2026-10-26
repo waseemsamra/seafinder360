@@ -47,11 +47,16 @@ function VendorDispatchDetailContent() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/admin/vendor-dispatch/${id}`, { cache: 'no-store' });
-      const json = await res.json();
-      setDispatch(json.dispatch);
-      setItems(json.items || []);
-      setVendors(json.vendors || {});
+      const res = await fetch(`/api/admin/vendor-dispatch/${encodeURIComponent(id)}`, { cache: 'no-store' });
+      const text = await res.text();
+      try {
+        const json = JSON.parse(text);
+        setDispatch(json.dispatch);
+        setItems(json.items || []);
+        setVendors(json.vendors || {});
+      } catch {
+        setDispatch(null);
+      }
     } catch (e) {
       setDispatch(null);
     }
