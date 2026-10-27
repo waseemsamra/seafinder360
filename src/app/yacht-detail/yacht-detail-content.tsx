@@ -88,26 +88,28 @@ export default function YachtDetailContent() {
     <>
       <TopBar />
       <Header />
-      <main style={{ paddingTop: "140px", background: "#fff" }}>
-        <nav style={{ padding: "15px 5%", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", maxWidth: "1200px", margin: "0 auto", marginTop: "20px" }}>
+      <main style={{ paddingTop: "140px", background: "#fff", overflowX: "hidden" }}>
+        <nav style={{ padding: "15px 20px", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", maxWidth: "1080px", margin: "0 auto", marginTop: "20px" }}>
           <Link href="/" style={{ color: "#6B7280" }}>Home</Link> <span>/</span>
           <Link href="/search" style={{ color: "#6B7280" }}>Hourly Charters</Link> <span>/</span>
           <span style={{ color: "#1A222C", fontWeight: 600 }}>{yacht.name}</span>
         </nav>
 
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "1fr 380px", gap: "40px", alignItems: "start", position: "relative" }}>
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "minmax(0, 1fr) 340px", gap: "28px", alignItems: "start", position: "relative" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", height: "450px" }}>
               <img src={displayImages[activeImg]} alt={yacht.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <button onClick={() => setActiveImg((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1))} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", color: "white", border: "none", width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer", fontSize: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+              <button onClick={() => setActiveImg((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1))} style={{ position: "absolute", right: "15px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", color: "white", border: "none", width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer", fontSize: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
               <div style={{ position: "absolute", top: "25px", left: "-30px", background: "#C4A87C", color: "#1A222C", padding: "6px 40px", fontWeight: 700, fontSize: "13px", letterSpacing: "1px", transform: "rotate(-45deg)", boxShadow: "0 2px 10px rgba(0,0,0,0.2)" }}>
                 {yacht.length || yacht.length_ft ? `${yacht.length || yacht.length_ft} FT` : ""}
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "15px", overflowX: "auto", paddingBottom: "5px" }}>
-              {displayImages.map((img: string, idx: number) => (
-                <div key={idx} onClick={() => setActiveImg(idx)} style={{ width: "110px", height: "75px", borderRadius: "8px", overflow: "hidden", cursor: "pointer", border: activeImg === idx ? "2px solid #C4A87C" : "2px solid transparent", flexShrink: 0 }}>
-                  <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ display: "flex", gap: "10px", overflowX: "auto", overflowY: "hidden", padding: "12px 10px 16px", background: "#f9f9fa", borderRadius: "12px", marginTop: "-8px", scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
+              {displayImages.slice(0, 50).map((img: string, idx: number) => (
+                <div key={idx} onClick={() => setActiveImg(idx)} style={{ width: "140px", height: "92px", minWidth: "140px", borderRadius: "10px", overflow: "hidden", cursor: "pointer", border: activeImg === idx ? "3px solid #C4A87C" : "2px solid #e5e7eb", flexShrink: 0, transition: "all 0.2s ease", boxShadow: activeImg === idx ? "0 3px 10px rgba(196,168,124,0.4)" : "0 1px 4px rgba(0,0,0,0.04)" }}>
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               ))}
             </div>
