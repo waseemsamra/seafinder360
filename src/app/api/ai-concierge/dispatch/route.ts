@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const clientName = answers?.find((a: any) => a.step === 7)?.answerText || null;
     
     const { data: dispatch, error } = await supabase.from('vendor_dispatches').insert({
-      session_id: sessionId || null,
+      session_id: null,
       yacht_name: yachtName || 'Yacht',
       client_name: clientName,
       guests: guests,
@@ -42,7 +42,8 @@ export async function POST(req: Request) {
         vendor_id: v.id,
         token: crypto.randomUUID()
       }));
-      await supabase.from('vendor_dispatch_items').insert(items);
+      const {error: itemsErr} = await supabase.from('vendor_dispatch_items').insert(items);
+      if(itemsErr) console.error('items err', itemsErr);
     }
     
     return NextResponse.json({ success: true, dispatch });

@@ -77,7 +77,11 @@ export default function YachtDetailContent() {
 
   if (!yacht) return null;
 
-  const images = yacht.images && Array.isArray(yacht.images) && yacht.images.length > 0 ? yacht.images : [yacht.img].filter(Boolean);
+  const images = yacht.images && Array.isArray(yacht.images) && yacht.images.length > 0 
+    ? yacht.images 
+    : (yacht.amenities?.gallery && Array.isArray(yacht.amenities.gallery) && yacht.amenities.gallery.length > 0)
+      ? yacht.amenities.gallery
+      : [yacht.img].filter(Boolean);
   const displayImages = images.length > 0 ? images : ["https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1200&auto=format&fit=crop"];
 
   return (

@@ -60,6 +60,7 @@ function VendorDispatchViewContent() {
   };
 
   const handleApprove = async () => {
+    if (!id || !dispatch) return;
     const supabase = createClient();
     await supabase.from('vendor_dispatches').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
     const summaryText = (dispatch.answers || [])
@@ -74,85 +75,42 @@ function VendorDispatchViewContent() {
     fetchData();
   };
 
-  if (loading) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Loading...</div></AdminLayout>;
-  if (!dispatch) return <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch"><div style={{ padding: '40px' }}>Not found</div></AdminLayout>;
+  const handleReject = async () => {
+    if (!id) return;
+    const supabase = createClient();
+    await supabase.from('vendor_dispatches').update({ status: 'rejected', rejected_at: new Date().toISOString() }).eq('id', id);
+    fetchData();
+  };
 
-  const acceptedCount = items.filter((i: any) => i.status === 'accepted').length;
-  const pendingCount = items.filter((i: any) => i.status === 'pending').length;
-  const declinedCount = items.filter((i: any) => i.status === 'declined').length;
+  if (loading) return <AdminLayout><div style={{padding:'40px'}}>Loading...</div></AdminLayout>;
+  if (!dispatch) return <AdminLayout><div style={{padding:'40px'}}>Dispatch not found</div></AdminLayout>;
 
   return (
-    <AdminLayout user={{ username: 'Admin User' }} activePage="vendor-dispatch">
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{ marginBottom: '32px' }}>
-        <a href="/admin/vendor-dispatch" style={{ color: '#C4A87C', textDecoration: 'none', fontSize: '14px' }}>← Back to Vendor Dispatch</a>
-        <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1A222C', fontFamily: "'Playfair Display', serif", marginTop: '12px', marginBottom: '4px' }}>Vendor Response</h1>
-        <p style={{ color: '#6B7280', fontSize: '14px' }}>Request #{id ? id.slice(0, 8).toUpperCase() : ''}</p>
+    <AdminLayout>
+      <div style={{padding:'30px'}}>
+        <h1 style={{marginBottom:'20px'}}>Vendor Dispatch #{dispatch.id?.slice(0,8)}</h1>
+        <div style={{display:'flex',gap:'20px',marginBottom:'30px'}}>
+          <div style={{padding:'15px 25px',background:'#f5f5f5',borderRadius:'8px'}}>Status: {dispatch.status}</div>
+          {dispatch.status === 'pending' && <div style={{padding:'15px 25px',background:'#fff3cd',borderRadius:'8px'}}>Expires in: {formatTime(timeLeft)}</div>}
         </div>
-
-        <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '24px' }}>
-          <div style={{ background: '#1A222C', padding: '25px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600' }}>New Booking Request</h2>
-            {dispatch.status === 'pending' && timeLeft > 0 ? (
-              <div style={{ background: '#EF4444', padding: '8px 16px', borderRadius: '20px', fontWeight: '700', fontSize: '14px' }}>{formatTime(timeLeft)}</div>
-            ) : dispatch.status === 'pending' && timeLeft <= 0 ? (
-              <div style={{ background: '#6B7280', padding: '8px 16px', borderRadius: '20px', fontWeight: '700', fontSize: '14px' }}>EXPIRED</div>
-            ) : (
-              <div style={{ background: '#10B981', padding: '8px 16px', borderRadius: '20px', fontWeight: '700', fontSize: '14px' }}>{dispatch.status.toUpperCase()}</div>
-            )}
-          </div>
-
-          <div style={{ padding: '30px', borderBottom: '1px solid #E5E7EB', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-            <div><span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', letterSpacing: '1px', marginBottom: '6px', fontWeight: '600' }}>Yacht Requested</span><strong style={{ fontSize: '16px', color: '#1A222C' }}>{dispatch.yacht_name}</strong></div>
-            <div><span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', letterSpacing: '1px', marginBottom: '6px', fontWeight: '600' }}>Guests</span><strong style={{ fontSize: '16px', color: '#1A222C' }}>{dispatch.guests || '-'}</strong></div>
-            <div><span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', letterSpacing: '1px', marginBottom: '6px', fontWeight: '600' }}>Duration</span><strong style={{ fontSize: '16px', color: '#1A222C' }}>{dispatch.duration || '-'}</strong></div>
-            <div><span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', letterSpacing: '1px', marginBottom: '6px', fontWeight: '600' }}>Client</span><strong style={{ fontSize: '16px', color: '#1A222C' }}>{dispatch.client_name || '-'} {dispatch.client_phone ? `• ${dispatch.client_phone}` : ''}</strong></div>
-          </div>
-
-          <div style={{ padding: '30px' }}>
-            <h3 style={{ fontSize: '13px', color: '#6B7280', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>Vendors Notified ({items.length > 0 ? items.length : allVendors.length}) • Accepted: {acceptedCount} • Pending: {pendingCount} • Declined: {declinedCount} | items:{items.length} vendors:{Object.keys(vendors).length}</h3>
-            {items.length > 0 ? (
-              items.map((item: any) => {
-                const v = vendors[item.vendor_id];
-                if (item.status === 'accepted') {
-                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #34D399', background: '#D1FAE5', marginBottom: '12px' }}>
-                    <div><div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div><div style={{ fontSize: '12px', color: '#065F46', marginTop: '4px' }}>Quote: AED {item.quote_price} {item.quote_notes && `• ${item.quote_notes}`}</div></div>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#10B981' }}>✓ Accepted</div>
-                  </div>
-                } else if (item.status === 'declined') {
-                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', marginBottom: '12px', opacity: 0.7 }}>
-                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#EF4444' }}>Unavailable</div>
-                  </div>
-                } else {
-                  return <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #FDE68A', background: '#FFFBEB', marginBottom: '12px' }}>
-                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v?.business_name || v?.name || 'Vendor'}</div>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#F59E0B' }}>⏱ Waiting...</div>
-                  </div>
-                }
-              })
-            ) : (
-              allVendors.map((v: any) => (
-                <div key={v.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#F9FAFB', marginBottom: '12px' }}>
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#1A222C', fontSize: '15px' }}>{v.business_name || v.name}</div>
-                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{v.phone || v.email || ''}</div>
-                  </div>
-                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280' }}>Not dispatched</div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <div style={{ padding: '25px 30px', background: '#F9FAFB', borderTop: '1px solid #E5E7EB', textAlign: 'right' }}>
-            {dispatch.status === 'pending' ? (
-              <button onClick={handleApprove} disabled={acceptedCount === 0 && timeLeft > 0} style={{ background: acceptedCount > 0 || timeLeft <= 0 ? '#1A222C' : '#9CA3AF', color: 'white', border: 'none', padding: '16px 32px', borderRadius: '6px', fontSize: '14px', fontWeight: '700', cursor: acceptedCount > 0 || timeLeft <= 0 ? 'pointer' : 'not-allowed' }}>
-                {acceptedCount > 0 ? 'Approve & Notify Client via WhatsApp' : timeLeft <= 0 ? 'Admin Override: Confirm Booking' : 'Waiting for Vendor Response'}
-              </button>
-            ) : (
-              <button disabled style={{ background: '#10B981', color: 'white', border: 'none', padding: '16px 32px', borderRadius: '6px', fontSize: '14px', fontWeight: '700' }}>Booking Approved</button>
-            )}
-          </div>
+        <div style={{display:'flex',gap:'10px',marginBottom:'30px'}}>
+          <button onClick={handleApprove} style={{padding:'10px 20px',background:'#28a745',color:'white',border:'none',borderRadius:'4px',cursor:'pointer'}}>Approve & Send WhatsApp</button>
+          <button onClick={handleReject} style={{padding:'10px 20px',background:'#dc3545',color:'white',border:'none',borderRadius:'4px',cursor:'pointer'}}>Reject</button>
+        </div>
+        <div style={{background:'white',padding:'30px',borderRadius:'8px',marginBottom:'20px'}}>
+          <h2 style={{marginBottom:'15px'}}>Client Info</h2>
+          <p><strong>Name:</strong> {dispatch.client_name}</p>
+          <p><strong>Phone:</strong> {dispatch.client_phone}</p>
+          <p><strong>Email:</strong> {dispatch.client_email}</p>
+          <p><strong>Yacht:</strong> {dispatch.yacht_name}</p>
+        </div>
+        <div style={{background:'white',padding:'30px',borderRadius:'8px'}}>
+          <h2 style={{marginBottom:'15px'}}>Preferences</h2>
+          {(dispatch.answers || []).map((a:any, i:number) => (
+            <div key={i} style={{padding:'10px 0',borderBottom:'1px solid #eee'}}>
+              <strong>{a.question}</strong>: {a.answerText || a.answer}
+            </div>
+          ))}
         </div>
       </div>
     </AdminLayout>
@@ -161,7 +119,7 @@ function VendorDispatchViewContent() {
 
 export default function VendorDispatchViewPage() {
   return (
-    <Suspense fallback={<div style={{ padding: '40px' }}>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <VendorDispatchViewContent />
     </Suspense>
   );
