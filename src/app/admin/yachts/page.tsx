@@ -1,7 +1,8 @@
 "use client";
 
 import AdminLayout from "@/components/AdminLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const amenitiesData = [
   { category: "Leisure & Comfort", items: ["Fly Bridge", "Sun Deck", "Jacuzzi"] },
@@ -16,12 +17,35 @@ const amenitiesData = [
 export default function YachtsPage() {
   const [view, setView] = useState<"list" | "form">("list");
   const [editing, setEditing] = useState<string | null>(null);
+  const [yachts, setYachts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const yachts = [
-    { name: "Majestic 120", type: "Motor Yacht", location: "Dubai Marina (GMCO)", specs: "120 ft / 12 / 5", price: "AED 8,500", status: "Active", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=200&auto=format&fit=crop" },
-    { name: "Ocean Pearl", type: "Sailing Yacht", location: "Dubai Harbour", specs: "85 ft / 8 / 4", price: "AED 4,200", status: "Active", img: "https://images.unsplash.com/photo-1543160915-158a41397584?q=80&w=200&auto=format&fit=crop" },
-    { name: "Sea Breeze", type: "Catamaran", location: "Marsa Al Arab", specs: "60 ft / 10 / 4", price: "AED 6,000", status: "Maintenance", img: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=200&auto=format&fit=crop" },
-  ];
+  useEffect(() => {
+    fetchYachts();
+  }, []);
+
+  const fetchYachts = async () => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from('yachts').select('*').order('id', { ascending: true });
+      if (data) {
+        const mapped = data.map((y: any) => ({
+          id: y.id,
+          name: y.name,
+          type: y.type || 'Motor Yacht',
+          location: y.location || y.marina || 'Dubai',
+          specs: `${y.length || y.length_ft || ''} ft / ${y.guests || ''} / ${y.cabins || ''}`,
+          price: `AED ${y.price?.toLocaleString() || '2500'}`,
+          status: 'Active',
+          img: y.img || (y.amenities?.gallery?.[0]) || "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=200&auto=format&fit=crop"
+        }));
+        setYachts(mapped);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+  };
 
   const showForm = (name?: string) => { setEditing(name || null); setView("form"); };
   const showList = () => { setView("list"); setEditing(null); };
@@ -56,26 +80,32 @@ export default function YachtsPage() {
               <tr><th>Yacht</th><th>Location / Marina</th><th>Specs (L / G / C)</th><th>Base Price</th><th>Status</th><th style={{textAlign:'right'}}>Actions</th></tr>
             </thead>
             <tbody>
-              {yachts.map((y, i) => (
-                <tr key={i}>
-                  <td>
-                    <div className="yacht-cell">
-                      <img src={y.img} className="yacht-thumb" alt={y.name} />
-                      <div className="yacht-details"><span className="yacht-name">{y.name}</span><span className="yacht-type">{y.type}</span></div>
-                    </div>
-                  </td>
-                  <td><div className="location-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>{y.location}</div></td>
-                  <td className="text-muted">{y.specs}</td>
-                  <td className="font-medium">{y.price} <span style={{fontSize:'11px', color:'#999', fontWeight:400}}>/ hr</span></td>
-                  <td><span className={`badge ${y.status === 'Active' ? 'badge-active' : 'badge-maintenance'}`}>{y.status}</span></td>
-                  <td>
-                    <div className="actions">
-                      <button className="btn-icon" onClick={() => showForm(y.name)} title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                      <button className="btn-icon delete" title="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {loading ? (
+                <tr><td colSpan={6} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>Loading...</td></tr>
+              ) : yachts.length === 0 ? (
+                <tr><td colSpan={6} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>No yachts found</td></tr>
+              ) : (
+                yachts.map((y, i) => (
+                  <tr key={i}>
+                    <td>
+                      <div className="yacht-cell">
+                        <img src={y.img} className="yacht-thumb" alt={y.name} />
+                        <div className="yacht-details"><span className="yacht-name">{y.name}</span><span className="yacht-type">{y.type}</span></div>
+                      </div>
+                    </td>
+                    <td><div className="location-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>{y.location}</div></td>
+                    <td className="text-muted">{y.specs}</td>
+                    <td className="font-medium">{y.price} <span style={{fontSize:'11px', color:'#999', fontWeight:400}}>/ hr</span></td>
+                    <td><span className={`badge ${y.status === 'Active' ? 'badge-active' : 'badge-maintenance'}`}>{y.status}</span></td>
+                    <td>
+                      <div className="actions">
+                        <button className="btn-icon" onClick={() => showForm(y.name)} title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                        <button className="btn-icon delete" title="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
