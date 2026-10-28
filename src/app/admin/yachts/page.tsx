@@ -19,6 +19,7 @@ export default function YachtsPage() {
   const [editing, setEditing] = useState<string | null>(null);
   const [yachts, setYachts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchYachts();
@@ -55,13 +56,22 @@ export default function YachtsPage() {
       <header className="header">
         <div className="header-title">
           <h1>{view === "list" ? "Yacht Fleet" : editing ? "Edit Yacht" : "Add New Yacht"}</h1>
-          <p>{view === "list" ? "Manage your yachts, locations, and availability" : "Enter the yacht's specifications, amenities, and details"}</p>
+          <p>{view === "list" ? `Manage your yachts, locations, and availability (${yachts.length} yachts)` : "Enter the yacht's specifications, amenities, and details"}</p>
         </div>
         {view === "list" ? (
-          <button className="btn-primary" onClick={() => showForm()}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add Yacht
-          </button>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <input
+              type="text"
+              placeholder="Search yachts by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ padding: '10px 16px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', minWidth: '280px' }}
+            />
+            <button className="btn-primary" onClick={() => showForm()}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Yacht
+            </button>
+          </div>
         ) : (
           <div className="header-actions">
             <button className="btn-secondary" onClick={showList}>Cancel</button>
@@ -82,10 +92,16 @@ export default function YachtsPage() {
             <tbody>
               {loading ? (
                 <tr><td colSpan={6} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>Loading...</td></tr>
-              ) : yachts.length === 0 ? (
+              ) : yachts.filter((y) => {
+                if (!searchTerm) return true;
+                return y.name.toLowerCase().includes(searchTerm.toLowerCase());
+              }).length === 0 ? (
                 <tr><td colSpan={6} style={{textAlign:'center', padding:'40px', color:'#6B7280'}}>No yachts found</td></tr>
               ) : (
-                yachts.map((y, i) => (
+                yachts.filter((y) => {
+                  if (!searchTerm) return true;
+                  return y.name.toLowerCase().includes(searchTerm.toLowerCase());
+                }).map((y, i) => (
                   <tr key={i}>
                     <td>
                       <div className="yacht-cell">
