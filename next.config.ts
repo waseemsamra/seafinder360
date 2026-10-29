@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -20,7 +21,7 @@ const nextConfig: NextConfig = {
     ],
   },
   turbopack: {
-    root: "/Users/apple/Downloads/seafinder360",
+    root: process.cwd(),
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
