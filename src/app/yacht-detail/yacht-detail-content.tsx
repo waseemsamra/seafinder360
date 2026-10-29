@@ -188,7 +188,7 @@ export default function YachtDetailContent() {
             </div>
           </div>
 
-            <div className="booking-sticky" style={{ position: "-webkit-sticky", position: "sticky", top: "90px", alignSelf: "start", zIndex: 10, height: "fit-content" }}>
+            <div className="booking-sticky" style={{ position: "sticky" as const, top: "90px", alignSelf: "start", zIndex: 10, height: "fit-content" }}>
               <div style={{ background: "#1A222C", color: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "25px", paddingBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                 <div>
