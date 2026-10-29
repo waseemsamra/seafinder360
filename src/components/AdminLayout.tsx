@@ -60,12 +60,29 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
             </div>
           </div>
           <div className="topbar-right">
-            <div className="user-profile">
-              <div className="avatar">A</div>
-              <div className="user-info">
-                <span className="user-name">{user?.username || user?.full_name || 'Admin User'}</span>
-                <span className="user-email">admin@seafinder360.com</span>
-              </div>
+          <div className="user-profile">
+            <div className="avatar">A</div>
+            <div className="user-info">
+              <span className="user-name">{user?.username || "Admin User"}</span>
+              <span className="user-email">admin@seafinder360.com</span>
+            </div>
+            <button
+              onClick={async () => {
+                try {
+                  const supabase = (await import("@/lib/supabase/client")).createClient();
+                  await supabase.auth.signOut();
+                } catch (e) {}
+                localStorage.clear();
+                sessionStorage.clear();
+                document.cookie.split(";").forEach(c => {
+                  document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+                window.location.href = "/";
+              }}
+              style={{ marginLeft: "12px", padding: "8px 14px", background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "6px", cursor: "pointer", fontSize: "13px" }}
+            >
+              Logout
+            </button>
             </div>
           </div>
         </header>

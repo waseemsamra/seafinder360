@@ -88,15 +88,16 @@ export default function YachtDetailContent() {
     <>
       <TopBar />
       <Header />
-      <main style={{ paddingTop: "140px", background: "#fff", overflowX: "hidden" }}>
-        <nav style={{ padding: "15px 20px", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", maxWidth: "1080px", margin: "0 auto", marginTop: "20px" }}>
+      <main style={{ paddingTop: "110px", background: "#fff", overflow: "visible", paddingBottom: "90px" }}>
+        <div style={{ maxWidth: "1404px", margin: "0 auto", padding: "20px 20px 0" }}>
+          <nav style={{ padding: "15px 0", background: "white", borderBottom: "1px solid #E5E7EB", fontSize: "12px", color: "#6B7280", display: "flex", gap: "10px", width: "100%", boxSizing: "border-box" }}>
           <Link href="/" style={{ color: "#6B7280" }}>Home</Link> <span>/</span>
           <Link href="/search" style={{ color: "#6B7280" }}>Hourly Charters</Link> <span>/</span>
           <span style={{ color: "#1A222C", fontWeight: 600 }}>{yacht.name}</span>
-        </nav>
-
-        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "minmax(0, 1fr) 340px", gap: "28px", alignItems: "start", position: "relative" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+          </nav>
+        </div>
+        <div style={{ maxWidth: "1404px", margin: "0 auto", padding: "40px 20px", display: "grid", gridTemplateColumns: "minmax(0, 1fr) 340px", gap: "28px", alignItems: "start", position: "relative", overflow: "visible", width: "100%", boxSizing: "border-box" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "30px", minWidth: 0, overflow: "visible" }}>
             <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", height: "450px" }}>
               <img src={displayImages[activeImg]} alt={yacht.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <button onClick={() => setActiveImg((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1))} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", color: "white", border: "none", width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer", fontSize: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
@@ -187,7 +188,7 @@ export default function YachtDetailContent() {
             </div>
           </div>
 
-            <div style={{ position: "sticky", top: "140px", alignSelf: "start" }}>
+            <div className="booking-sticky" style={{ position: "-webkit-sticky", position: "sticky", top: "90px", alignSelf: "start", zIndex: 10, height: "fit-content" }}>
               <div style={{ background: "#1A222C", color: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "25px", paddingBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                 <div>
@@ -238,9 +239,17 @@ export default function YachtDetailContent() {
       <Footer />
       <FloatingButtons />
       <AIConciergeModal isOpen={showConcierge} onClose={() => setShowConcierge(false)} yacht={yacht} />
+      <div className="mobile-book-btn" style={{ display: "none", position: "fixed", bottom: "0", left: "0", right: "0", background: "white", padding: "12px 16px", borderTop: "1px solid #e5e7eb", zIndex: 1000, boxShadow: "0 -4px 20px rgba(0,0,0,0.08)" }}>
+        <button onClick={() => setShowConcierge(true)} style={{ width: "100%", padding: "14px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer" }}>Book Now - AED {yacht.price?.toLocaleString()} / hour</button>
+      </div>
       <style jsx>{`
         @media (max-width: 992px) {
           main > div { grid-template-columns: 1fr !important; }
+          .mobile-book-btn { display: block !important; }
+          .booking-sticky { position: static !important; }
+        }
+        @media (min-width: 993px) {
+          .mobile-book-btn { display: none !important; }
         }
       `}</style>
     </>

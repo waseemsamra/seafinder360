@@ -23,8 +23,9 @@ export default function Header() {
 
   return (
     <>
-      <header className={`header${scrolled ? " scrolled" : ""}`} id="mainHeader" style={{ position: 'fixed', top: scrolled ? 0 : 39, backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', background: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.25)', borderBottom: 'none', boxShadow: 'none', transition: 'all 0.25s ease' }}>
-        <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'110px', width:'auto', objectFit:'contain'}} /></a>
+      <header className="header" id="mainHeader" style={{ position: 'fixed', top: 0, background: '#ffffff', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', width: '100%' }}>
+        <div style={{ maxWidth: '1404px', margin: '0 auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0px 20px', boxSizing: 'border-box' }}>
+          <a href="/" className="logo"><img src="/logo-seafinder360.png" alt="SeaFinder360" style={{height:'110px', width:'auto', objectFit:'contain', display:'block'}} /></a>
         <nav className="nav-menu">
           <a href="#" className="no-arrow">Home</a>
           <a href="#fleet">Yacht Charter</a>
@@ -45,12 +46,13 @@ export default function Header() {
           </div>
             <div className="call-expert" style={{ color: '#1A222C' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A222C" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-              <div><span style={{ color: '#6B7280' }}>CALL EXPERT</span><span style={{ color: '#1A222C' }}>+9711234567</span></div>
+              <div><span style={{ color: '#6B7280' }}>CALL EXPERT</span><span style={{ color: '#1A222C' }}>+971542197999</span></div>
             </div>
           <a href="#" className="btn-whatsapp">Chat on WhatsApp</a>
           <div className={`hamburger${mobileOpen ? " active" : ""}`} onClick={() => setMobileOpen((v) => !v)}>
             <span/><span/><span/>
           </div>
+        </div>
         </div>
       </header>
       <div className={`menu-overlay${mobileOpen ? " active" : ""}`} onClick={() => setMobileOpen(false)} />
