@@ -35,11 +35,11 @@ export default function LoginPage() {
         .single();
 
       if (profile?.role_id === 1) {
-        router.push('/admin');
-        window.location.href = '/admin';
+        setLoading(false);
+        window.location.replace('/admin');
       } else {
-        router.push('/');
-        window.location.href = '/';
+        setLoading(false);
+        window.location.replace('/');
       }
     }
     setLoading(false);
