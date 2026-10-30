@@ -12,33 +12,16 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const supabase = createClient();
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
-    if (data?.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role_id')
-        .eq('id', data.user.id)
-        .maybeSingle();
-
-      if (profile?.role_id === 1) {
-        window.location.replace("/admin");
-      } else {
-        window.location.replace("/");
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { setError(error.message); setLoading(false); return; }
+      if (data?.user) {
+        const { data: profile } = await supabase.from('profiles').select('role_id').eq('id', data.user.id).single();
+        if (profile?.role_id === 1) { window.location.href = '/admin'; return; }
+        window.location.href = '/'; return;
       }
-      return;
-    }
+    } catch (err:any) { setError(err.message); }
     setLoading(false);
   };
 
