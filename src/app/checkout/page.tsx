@@ -81,8 +81,8 @@ export default function CheckoutPage() {
           </div>
           <div>
             <h2 className="section-title">Choose departure time</h2>
-            <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={(t) => { setStartTime(t); const [sh,sm]=t.split(':').map(Number); setEndTime(`${String(Math.min(23, sh+1)).padStart(2,'0')}:${String(sm).padStart(2,'0')}`); }} onEndChange={setEndTime} />
-            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "13px" }}>Duration: {hours} hr{hours !== 1 ? 's' : ''} (minimum 1 hour)</div>
+            <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={(t) => { setStartTime(t); const [sh,sm]=t.split(':').map(Number); setEndTime(`${String(Math.min(23, sh+Math.floor(hours))).padStart(2,'0')}:${String(sm).padStart(2,'0')}`); }} onEndChange={setEndTime} />
+            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "13px" }}>Departure: {startTime} | Duration: {hours} hr{hours !== 1 ? 's' : ''}</div>
           </div>
         </div>
         <div className="right-col">
