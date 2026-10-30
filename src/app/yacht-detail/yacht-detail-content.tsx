@@ -226,7 +226,7 @@ export default function YachtDetailContent() {
                 </div>
               </div>
 
-              <button onClick={() => { window.location.href = `/payment?yachtId=${yacht.id}`; }} style={{ width: "100%", padding: "16px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", marginTop: "10px" }}>Book Now</button>
+              <button onClick={() => { window.location.href = `/checkout?yachtId=${yacht.id}`; }} style={{ width: "100%", padding: "16px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", marginTop: "10px" }}>Book Now</button>
 
               <div style={{ marginTop: "20px", textAlign: "center", fontSize: "12px", color: "#888", display: "flex", justifyContent: "center", gap: "15px" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>Secure Booking</span>
@@ -240,7 +240,7 @@ export default function YachtDetailContent() {
       <FloatingButtons />
       <AIConciergeModal isOpen={showConcierge} onClose={() => setShowConcierge(false)} yacht={yacht} />
       <div className="mobile-book-btn" style={{ display: "none", position: "fixed", bottom: "0", left: "0", right: "0", background: "white", padding: "12px 16px", borderTop: "1px solid #e5e7eb", zIndex: 1000, boxShadow: "0 -4px 20px rgba(0,0,0,0.08)" }}>
-        <button onClick={() => { window.location.href = `/payment?yachtId=${yacht.id}`; }} style={{ width: "100%", padding: "14px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer" }}>Book Now - AED {yacht.price?.toLocaleString()} / hour</button>
+        <button onClick={() => { window.location.href = `/checkout?yachtId=${yacht.id}`; }} style={{ width: "100%", padding: "14px", background: "#C4A87C", color: "#1A222C", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: 700, textTransform: "uppercase", cursor: "pointer" }}>Book Now - AED {yacht.price?.toLocaleString()} / hour</button>
       </div>
       <style jsx>{`
         @media (max-width: 992px) {
