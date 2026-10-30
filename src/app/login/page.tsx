@@ -30,15 +30,13 @@ export default function LoginPage() {
         .from('profiles')
         .select('role_id')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
       if (profile?.role_id === 1) {
-        setLoading(false);
-        window.location.href = '/admin';
+        window.location.replace('/admin');
         return;
       } else {
-        setLoading(false);
-        window.location.href = '/';
+        window.location.replace('/');
         return;
       }
     }
@@ -61,10 +59,10 @@ export default function LoginPage() {
         width: '100%',
         maxWidth: '400px'
       }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Admin Login</h1>
+        <h1 style={{ textAlign: 'center', marginBottom: '30px', fontFamily: 'Inter, sans-serif' }}>Login</h1>
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Email</label>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>Email</label>
             <input
               type="email"
               value={email}
@@ -80,7 +78,7 @@ export default function LoginPage() {
             />
           </div>
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Password</label>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>Password</label>
             <input
               type="password"
               value={password}
@@ -95,7 +93,7 @@ export default function LoginPage() {
               }}
             />
           </div>
-          {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+          {error && <div style={{ color: 'red', marginBottom: '10px', fontSize: '14px' }}>{error}</div>}
           <button
             type="submit"
             disabled={loading}
@@ -106,7 +104,8 @@ export default function LoginPage() {
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer'
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '15px'
             }}
           >
             {loading ? 'Logging in...' : 'Login'}
