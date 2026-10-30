@@ -11,6 +11,23 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children, user, activePage = "users" }: AdminLayoutProps) {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch {}
+    try { localStorage.clear(); sessionStorage.clear(); } catch {}
+    try {
+      document.cookie.split(";").forEach((c) => {
+        const name = c.split("=")[0].trim();
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      });
+    } catch {}
+    window.location.href = "/login";
+  };
+
   return (
     <>
       <style jsx global>{`
@@ -31,21 +48,9 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
           --font-sans: 'Inter', sans-serif;
           --font-serif: 'Playfair Display', serif;
         }
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: var(--font-sans);
-        }
-        html, body {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-        }
-        body {
-          background-color: var(--bg-color);
-          color: var(--text-main);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-sans); }
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-main); }
       `}</style>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -60,208 +65,80 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
             </div>
           </div>
           <div className="topbar-right">
-          <div className="user-profile">
-            <div className="avatar">A</div>
-            <div className="user-info">
-              <span className="user-name">{user?.username || "Admin User"}</span>
-              <span className="user-email">admin@seafinder360.com</span>
-            </div>
-            <button
-              onClick={async () => {
-                try {
-                  const { createClient } = await import("@/lib/supabase/client");
-                  const supabase = createClient();
-                  await supabase.auth.signOut({ scope: 'global' });
-                } catch (e) {}
-                try { localStorage.clear(); } catch(e){}
-                try { sessionStorage.clear(); } catch(e){}
-                try {
-                  document.cookie.split(";").forEach(c => {
-                    const eqPos = c.indexOf("=");
-                    const name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
-                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-                  });
-                } catch(e){}
-                window.location.replace('/login');
-              }}
-              style={{ marginLeft: '10px', padding: '6px 12px', cursor: 'pointer', background: 'transparent', border: '1px solid #ddd', borderRadius: '4px' }}
-            >
-              Logout
-            </button>
+            <div className="user-profile">
+              <div className="avatar">A</div>
+              <div className="user-info">
+                <span className="user-name">{user?.username || "Admin User"}</span>
+                <span className="user-email">admin@seafinder360.com</span>
+              </div>
+              <button onClick={handleLogout} style={{ marginLeft: '10px', padding: '6px 12px', cursor: 'pointer', background: 'transparent', border: '1px solid #ddd', borderRadius: '4px' }}>Logout</button>
             </div>
           </div>
         </header>
-        <div className="admin-body">
+        <div className="main-layout">
           <aside className="sidebar">
             <nav className="nav-menu">
-              <Link href="/admin" className={`nav-link ${activePage === 'dashboard' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                <span>Dashboard</span>
+              <Link href="/admin" className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Dashboard
               </Link>
-              <Link href="/admin/bookings" className={`nav-link ${activePage === 'bookings' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                <span>Bookings</span>
+              <Link href="/admin/yachts" className={`nav-item ${activePage === 'yachts' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                Yachts
               </Link>
-              <Link href="/admin/yachts" className={`nav-link ${activePage === 'yachts' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><path d="M2 12h20"></path><path d="M12 2v20"></path><path d="M4.93 4.93l14.14 14.14"></path><path d="M19.07 4.93L4.93 19.07"></path></svg>
-                <span>Yacht Fleet</span>
+              <Link href="/admin/bookings" className={`nav-item ${activePage === 'bookings' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Bookings
               </Link>
-              <Link href="/admin/categories" className={`nav-link ${activePage === 'categories' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                <span>Categories</span>
+              <Link href="/admin/users" className={`nav-item ${activePage === 'users' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Users
               </Link>
-              <Link href="/admin/users" className={`nav-link ${activePage === 'users' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                <span>Users</span>
+              <Link href="/admin/vendors" className={`nav-item ${activePage === 'vendors' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                Vendors
               </Link>
-              <Link href="/admin/vendors" className={`nav-link ${activePage === 'vendors' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <span>Vendors</span>
+              <Link href="/admin/vendor-dispatch" className={`nav-item ${activePage === 'vendor-dispatch' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Vendor Dispatch
               </Link>
-              <Link href="/admin/vendor-dispatch" className={`nav-link ${activePage === 'vendor-dispatch' ? 'active' : ''}`}>
-                <svg className="nav-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <span>Vendor Dispatch</span>
-              </Link>
-              <Link href="#" className="nav-link">
-                <svg className="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>Agents</span>
+              <Link href="/admin/categories" className={`nav-item ${activePage === 'categories' ? 'active' : ''}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Categories
               </Link>
             </nav>
           </aside>
-          <main className="main-content">
-            {children}
-          </main>
+          <main className="main-content">{children}</main>
         </div>
       </div>
-
       <style jsx>{`
-        .admin-container {
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+        .admin-container { min-height: 100vh; background-color: var(--bg-color); }
+        .topbar { display: flex; align-items: center; justify-content: space-between; height: 70px; background-color: var(--topbar-bg); border-bottom: 1px solid var(--border-color); padding: 0 30px; position: sticky; top: 0; z-index: 100; }
+        .topbar-left { display: flex; align-items: center; gap: 20px; }
+        .logo-area { display: flex; flex-direction: column; }
+        .logo-title { font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--primary-navy); line-height: 1; }
+        .logo-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.5px; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--gold-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; }
+        .user-info { display: flex; flex-direction: column; text-align: right; }
+        .user-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-email { font-size: 12px; color: var(--text-muted); }
+        .main-layout { display: flex; min-height: calc(100vh - 70px); }
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); padding: 20px 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+        .nav-menu { display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 8px; transition: all 0.2s ease; }
+        .nav-item:hover { background-color: var(--bg-color); color: var(--primary-navy); }
+        .nav-item.active { background-color: var(--active-bg); color: var(--active-text); font-weight: 600; }
+        .nav-item svg { flex-shrink: 0; }
+        .main-content { flex: 1; padding: 30px; max-width: calc(100vw - 260px); }
+        @media (max-width: 1024px) {
+          .sidebar { width: 220px; }
+          .main-content { max-width: calc(100vw - 220px); padding: 20px; }
         }
-        .topbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 70px;
-          background-color: var(--topbar-bg);
-          border-bottom: 1px solid var(--border-color);
-          padding: 0 32px;
-          position: sticky;
-          top: 0;
-          z-index: 10;
-        }
-        .topbar-left .logo-area {
-          display: flex;
-          flex-direction: column;
-        }
-        .logo-title {
-          font-family: var(--font-serif);
-          font-size: 22px;
-          font-weight: 700;
-          color: var(--primary-navy);
-          letter-spacing: -0.5px;
-        }
-        .logo-subtitle {
-          font-size: 9px;
-          text-transform: uppercase;
-          color: var(--gold-accent);
-          letter-spacing: 1.5px;
-          margin-top: 2px;
-          font-weight: 600;
-        }
-        .topbar-right .user-profile {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .avatar {
-          width: 38px;
-          height: 38px;
-          background-color: var(--primary-navy);
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 14px;
-        }
-        .user-info {
-          display: flex;
-          flex-direction: column;
-        }
-        .user-name {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--primary-navy);
-        }
-        .user-email {
-          font-size: 11px;
-          color: var(--text-muted);
-        }
-        .admin-body {
-          display: flex;
-          flex: 1;
-        }
-        .sidebar {
-          width: 260px;
-          min-width: 260px;
-          background-color: var(--sidebar-bg);
-          border-right: 1px solid var(--border-color);
-          display: flex;
-          flex-direction: column;
-          padding: 20px 0;
-        }
-        .nav-menu {
-          display: flex;
-          flex-direction: column;
-          padding: 0 12px;
-          gap: 4px;
-        }
-        .nav-link {
-          display: flex;
-          align-items: center;
-          padding: 10px 12px;
-          text-decoration: none;
-          color: var(--text-muted);
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          transition: all 0.2s;
-          width: 100%;
-        }
-        .nav-link:hover {
-          background-color: var(--bg-color);
-          color: var(--primary-navy);
-        }
-        .nav-link.active {
-          background-color: var(--active-bg);
-          color: var(--active-text);
-          font-weight: 600;
-          border-left: 3px solid var(--gold-accent);
-          border-radius: 0 8px 8px 0;
-          padding-left: 9px;
-        }
-        .nav-link.active svg {
-          stroke: var(--gold-accent);
-        }
-        .nav-icon {
-          width: 20px;
-          height: 20px;
-          margin-right: 12px;
-          flex-shrink: 0;
-          stroke: var(--text-muted);
-          fill: none;
-          stroke-width: 2;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
-        .main-content {
-          flex: 1;
-          padding: 32px 40px;
-          background-color: var(--bg-color);
+        @media (max-width: 768px) {
+          .sidebar { display: none; }
+          .main-content { max-width: 100%; }
         }
       `}</style>
     </>
