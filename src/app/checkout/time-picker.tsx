@@ -46,9 +46,6 @@ export default function TimeRangePicker({ startValue = "09:00", endValue = "10:0
           </select>
         </div>
       </div>
-      <div style={{ textAlign: "center", color: "#666", fontSize: "14px" }}>
-        Departure: {startHour}:{startMin} | Duration: {Math.max(1, ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin))) < 0 ? ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin)))+1440 : ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin))))/60} hrs (min 1 hr)
-      </div>
     </div>
   );
 }
