@@ -1,14 +1,12 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("waseemsamra@gmail.com");
   const [password, setPassword] = useState("Samra@2008@");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -30,16 +28,18 @@ export default function LoginPage() {
     if (data?.user) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('*')
+        .select('role_id')
         .eq('id', data.user.id)
         .single();
 
       if (profile?.role_id === 1) {
         setLoading(false);
-        window.location.replace('/admin');
+        window.location.href = '/admin';
+        return;
       } else {
         setLoading(false);
-        window.location.replace('/');
+        window.location.href = '/';
+        return;
       }
     }
     setLoading(false);
@@ -95,14 +95,14 @@ export default function LoginPage() {
               }}
             />
           </div>
-          {error && <div style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+          {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
           <button
             type="submit"
             disabled={loading}
             style={{
               width: '100%',
               padding: '12px',
-              background: '#C4A87C',
+              background: '#1A222C',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
