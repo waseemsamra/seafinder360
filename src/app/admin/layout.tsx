@@ -20,18 +20,18 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
         .from('profiles')
         .select('role_id')
         .eq('id', session.user.id)
-        .single();
-      if (profile?.role_id !== 1) {
+        .maybeSingle();
+      if (!profile || profile.role_id !== 1) {
         router.replace('/');
         return;
       }
       setLoading(false);
     };
     checkAuth();
-  }, [router, supabase]);
+  }, []);
 
   if (loading) {
-    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'Inter, sans-serif' }}>Loading...</div>;
   }
 
   return <>{children}</>;
