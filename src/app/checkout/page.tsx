@@ -69,20 +69,20 @@ export default function CheckoutPage() {
             <div className="ticket-card">
               <div className="ticket-info">
                 <h4>Charter Hours</h4>
-                <p>{hours} hour{hours !== 1 ? 's' : ''} (auto-calculated)</p>
+                <p>{hours % 1 === 0 ? hours : hours.toFixed(1)} hour{(hours % 1 === 0 ? hours : hours.toFixed(1)) !== 1 && (hours % 1 === 0 ? hours : hours.toFixed(1)) !== "1" ? 's' : (hours === 1 ? '' : hours.toFixed(1) === '1.0' ? '' : 's')}</p>
                 <div className="price">AED {(900 * hours).toFixed(2)}</div>
               </div>
-              <div className="counter-pill">
-                <button className="counter-btn" onClick={() => setHours(Math.max(1, hours - 0.5))} disabled={hours <= 1}>−</button>
-                <div className="counter-val">{hours}</div>
-                <button className="counter-btn" onClick={() => setHours(hours + 0.5)}>+</button>
+              <div className="ticket-counter">
+                <button className="counter-btn" onClick={() => setHours(Math.max(1, Math.round((hours - 1) * 2) / 2))} disabled={hours <= 1}>−</button>
+                <span className="counter-num">{hours % 1 === 0 ? hours : hours.toFixed(1)}</span>
+                <button className="counter-btn" onClick={() => setHours(Math.round((hours + 1) * 2) / 2)}>+</button>
               </div>
             </div>
           </div>
           <div>
             <h2 className="section-title">Choose departure time</h2>
             <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={(t) => { setStartTime(t); const [sh,sm]=t.split(':').map(Number); setEndTime(`${String(Math.min(23, sh+Math.floor(hours))).padStart(2,'0')}:${String(sm).padStart(2,'0')}`); }} onEndChange={setEndTime} />
-            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "13px" }}>Departure: {startTime} | Duration: {hours} hr{hours !== 1 ? 's' : ''}</div>
+            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "13px" }}>Departure: {startTime} | Duration: {hours % 1 === 0 ? hours : hours.toFixed(1)} hr{hours % 1 === 0 ? (hours === 1 ? '' : 's') : (hours === 1 ? '' : 's')}</div>
           </div>
         </div>
         <div className="right-col">
