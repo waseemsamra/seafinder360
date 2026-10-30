@@ -7,6 +7,7 @@ export default function CheckoutPage() {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("10:00");
   const [hours, setHours] = useState(1);
+  const [selectedDate, setSelectedDate] = useState("Sun, 25 Oct 2026");
   useEffect(() => {
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
@@ -51,14 +52,28 @@ export default function CheckoutPage() {
             <h2 className="section-title">When will you visit?</h2>
             <div className="date-header"><span>23/10/2026</span><span>29/10/2026</span></div>
             <div className="date-row">
-              {["Fri 23", "Sat 24", "Sun 25", "Mon 26", "Tue 27", "Wed 28", "Thu 29"].map((d, i) => (
-                <div key={d} className={`date-btn${i === 2 ? " active" : ""}`}>
-                  <div className="day">{d.split(" ")[0]}</div>
-                  <div className="num">{d.split(" ")[1]}</div>
+              {[
+                {label:"Fri 23", date:"Fri, 23 Oct 2026"},
+                {label:"Sat 24", date:"Sat, 24 Oct 2026"},
+                {label:"Sun 25", date:"Sun, 25 Oct 2026"},
+                {label:"Mon 26", date:"Mon, 26 Oct 2026"},
+                {label:"Tue 27", date:"Tue, 27 Oct 2026"},
+                {label:"Wed 28", date:"Wed, 28 Oct 2026"},
+                {label:"Thu 29", date:"Thu, 29 Oct 2026"},
+              ].map((d, i) => (
+                <div key={d.label} className={`date-btn${selectedDate === d.date ? " active" : ""}`} onClick={() => setSelectedDate(d.date)} style={{ cursor: "pointer" }}>
+                  <div className="day">{d.label.split(" ")[0]}</div>
+                  <div className="num">{d.label.split(" ")[1]}</div>
                   <div className="price">900</div>
                 </div>
               ))}
-              <div className="date-btn-more">
+              <input type="date" onChange={(e) => {
+                if (e.target.value) {
+                  const dt = new Date(e.target.value);
+                  setSelectedDate(dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).replace(/,/g, ''));
+                }
+              }} style={{ position: "absolute", opacity: 0, width: 0, height: 0 }} id="datePicker" />
+              <div className="date-btn-more" onClick={() => document.getElementById('datePicker')?.click()} style={{ cursor: "pointer" }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
                 More dates
               </div>
@@ -93,7 +108,7 @@ export default function CheckoutPage() {
               <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=200&auto=format&fit=crop" alt="Yacht" />
               <div>
                 <h4>Italian Yacht 66FT</h4>
-                <div className="date-row-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg> Sun, 25 Oct 2026</div>
+                <div className="date-row-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg> {selectedDate}</div>
                 <div className="cancel-text"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2"><polyline points="20 6 9 17 4 12" /></svg> Free cancellation until 24h</div>
               </div>
             </div>
