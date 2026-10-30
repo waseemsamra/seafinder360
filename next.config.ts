@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  // cacheComponents: false,
-  // partialPrefetching: true,
   images: {
     remotePatterns: [
       {
