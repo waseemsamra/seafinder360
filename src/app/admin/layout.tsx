@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const check = async () => {
+      const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.replace('/login');
@@ -20,19 +19,14 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
         .from('profiles')
         .select('role_id')
         .eq('id', session.user.id)
-        .maybeSingle();
-      if (!profile || profile.role_id !== 1) {
+        .single();
+      if (profile?.role_id !== 1) {
         router.replace('/');
         return;
       }
-      setLoading(false);
     };
-    checkAuth();
-  }, []);
-
-  if (loading) {
-    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'Inter, sans-serif' }}>Loading...</div>;
-  }
+    check();
+  }, [router]);
 
   return <>{children}</>;
 }
