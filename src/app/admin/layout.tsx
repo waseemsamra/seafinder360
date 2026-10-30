@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
+  const [authorized, setAuthorized] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,9 +25,14 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
         router.replace('/');
         return;
       }
+      setAuthorized(true);
     };
     check();
   }, [router]);
+
+  if (!authorized) {
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
+  }
 
   return <>{children}</>;
 }
