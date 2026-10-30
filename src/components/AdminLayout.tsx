@@ -11,6 +11,17 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children, user, activePage = "users" }: AdminLayoutProps) {
+  const handleLogout = () => {
+    try { localStorage.clear(); sessionStorage.clear(); } catch {}
+    try {
+      document.cookie.split(";").forEach((c) => {
+        const name = c.split("=")[0].trim();
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      });
+    } catch {}
+    window.location.href = "/login";
+  };
+
   return (
     <>
       <style jsx global>{`
@@ -54,6 +65,7 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
                 <span className="user-name">{user?.username || "Admin User"}</span>
                 <span className="user-email">admin@seafinder360.com</span>
               </div>
+              <button onClick={handleLogout} style={{ marginLeft: '10px', padding: '6px 12px', cursor: 'pointer', background: 'transparent', border: '1px solid #ddd', borderRadius: '4px' }}>Logout</button>
             </div>
           </div>
         </header>
