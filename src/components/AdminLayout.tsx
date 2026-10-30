@@ -69,17 +69,22 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
             <button
               onClick={async () => {
                 try {
-                  const supabase = (await import("@/lib/supabase/client")).createClient();
-                  await supabase.auth.signOut();
+                  const { createClient } = await import("@/lib/supabase/client");
+                  const supabase = createClient();
+                  await supabase.auth.signOut({ scope: 'global' });
                 } catch (e) {}
-                localStorage.clear();
-                sessionStorage.clear();
-                document.cookie.split(";").forEach(c => {
-                  document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-                });
-                window.location.href = "/";
+                try { localStorage.clear(); } catch(e){}
+                try { sessionStorage.clear(); } catch(e){}
+                try {
+                  document.cookie.split(";").forEach(c => {
+                    const eqPos = c.indexOf("=");
+                    const name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                  });
+                } catch(e){}
+                window.location.replace('/login');
               }}
-              style={{ marginLeft: "12px", padding: "8px 14px", background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "6px", cursor: "pointer", fontSize: "13px" }}
+              style={{ marginLeft: '10px', padding: '6px 12px', cursor: 'pointer', background: 'transparent', border: '1px solid #ddd', borderRadius: '4px' }}
             >
               Logout
             </button>
