@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import YachtCarousels from "@/components/YachtCarousels";
+import WatersportsAdventure from "@/components/WatersportsAdventure";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 
@@ -15,6 +16,7 @@ export default function Page() {
         <Hero />
         <Services />
         <YachtCarousels />
+        <WatersportsAdventure />
       </main>
       <Footer />
       <FloatingButtons />
