@@ -69,13 +69,13 @@ export default function CheckoutPage() {
             <div className="ticket-card">
               <div className="ticket-info">
                 <h4>Charter Hours</h4>
-                <p>{hours % 1 === 0 ? hours : hours.toFixed(1)} hour{(hours % 1 === 0 ? hours : hours.toFixed(1)) !== 1 && (hours % 1 === 0 ? hours : hours.toFixed(1)) !== "1" ? 's' : (hours === 1 ? '' : hours.toFixed(1) === '1.0' ? '' : 's')}</p>
+                <p>{hours % 1 === 0 ? hours : hours.toFixed(1)} hour{hours === 1 ? '' : 's'}</p>
                 <div className="price">AED {(900 * hours).toFixed(2)}</div>
               </div>
               <div className="ticket-counter">
-                <button className="counter-btn" onClick={() => setHours(Math.max(1, Math.round((hours - 1) * 2) / 2))} disabled={hours <= 1}>−</button>
+                <button className="counter-btn" onClick={() => setHours(Math.max(1, hours - 1))} disabled={hours <= 1}>-</button>
                 <span className="counter-num">{hours % 1 === 0 ? hours : hours.toFixed(1)}</span>
-                <button className="counter-btn" onClick={() => setHours(Math.round((hours + 1) * 2) / 2)}>+</button>
+                <button className="counter-btn" onClick={() => setHours(hours + 1)}>+</button>
               </div>
             </div>
           </div>
