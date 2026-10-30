@@ -7,12 +7,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("Samra@2008@");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    const supabase = createClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -30,15 +30,14 @@ export default function LoginPage() {
         .from('profiles')
         .select('role_id')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
       if (profile?.role_id === 1) {
-        window.location.replace('/admin');
-        return;
+        window.location.href = "/admin";
       } else {
-        window.location.replace('/');
-        return;
+        window.location.href = "/";
       }
+      return;
     }
     setLoading(false);
   };
