@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 export default function TopBar() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -38,7 +40,11 @@ export default function TopBar() {
         setIsAdmin(false);
       }
     });
-    return () => subscription.unsubscribe();
+    const click = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('click', click);
+    return () => { subscription.unsubscribe(); document.removeEventListener('click', click); };
   }, []);
 
   const handleLogout = async () => {
@@ -53,7 +59,7 @@ export default function TopBar() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
       });
     } catch {}
-    window.location.href = "/";
+    window.location.href = "/login";
   };
 
   return (
@@ -72,9 +78,17 @@ export default function TopBar() {
         <div className="top-bar-right" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div className="social-icons"><span>f</span><span>ig</span><span>tt</span></div>
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
-              {isAdmin && <Link href="/admin" style={{ color: '#C4A87C', textDecoration: 'none', fontWeight: 600 }}>Admin</Link>}
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '12px' }}>Logout</button>
+            <div ref={ref} style={{ position: 'relative' }}>
+              <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Account
+              </button>
+              {open && (
+                <div style={{ position: 'absolute', right: 0, top: '120%', background: '#fff', color: '#000', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', minWidth: '140px', zIndex: 1000 }}>
+                  {isAdmin && <Link href="/admin" style={{ display: 'block', padding: '10px 14px', textDecoration: 'none', color: '#000', fontSize: '13px' }}>Admin Dashboard</Link>}
+                  <button onClick={handleLogout} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px' }}>Logout</button>
+                </div>
+              )}
             </div>
           ) : (
             <Link href="/login" style={{ color: '#fff', textDecoration: 'none', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
