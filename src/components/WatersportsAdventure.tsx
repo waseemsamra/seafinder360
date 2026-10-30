@@ -23,7 +23,7 @@ export default function WatersportsAdventure() {
       lightbox?.classList.remove('active');
       document.body.style.overflow = '';
       setTimeout(() => {
-        if (lightboxImg) lightboxImg.src = '';
+        if (lightboxImg) (lightboxImg as HTMLImageElement).src = '';
       }, 300);
     };
 
