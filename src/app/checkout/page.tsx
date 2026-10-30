@@ -1,7 +1,10 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
-import Header from "@/components/Header";
+import TimePicker from "./time-picker";
 
 export default function CheckoutPage() {
+  const [departureTime, setDepartureTime] = useState("09:00");
   return (
     <>
       <header className="header">
@@ -68,10 +71,9 @@ export default function CheckoutPage() {
           </div>
           <div>
             <h2 className="section-title">Choose a departure time</h2>
-            <div className="time-grid">
-              {["06:00 – 08:00", "07:00 – 09:00", "08:00 – 10:00", "09:00 – 11:00", "10:00 – 12:00", "11:00 – 13:00", "12:00 – 14:00", "13:00 – 15:00", "14:00 – 16:00", "15:00 – 17:00", "16:00 – 18:00", "17:00 – 19:00", "18:00 – 20:00", "19:00 – 21:00", "20:00 – 22:00"].map((t, i) => (
-                <button key={t} className={`time-btn${i === 0 ? " active" : ""}`}>{t}</button>
-              ))}
+            <TimePicker value={departureTime} onChange={setDepartureTime} />
+            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "14px" }}>
+              Selected: {departureTime}
             </div>
           </div>
         </div>
