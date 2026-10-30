@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import TimePicker from "./time-picker";
+import TimeRangePicker from "./time-picker";
 
 export default function CheckoutPage() {
-  const [departureTime, setDepartureTime] = useState("09:00");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("12:00");
   return (
     <>
       <header className="header">
@@ -70,11 +71,8 @@ export default function CheckoutPage() {
             </div>
           </div>
           <div>
-            <h2 className="section-title">Choose a departure time</h2>
-            <TimePicker value={departureTime} onChange={setDepartureTime} />
-            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "14px" }}>
-              Selected: {departureTime}
-            </div>
+            <h2 className="section-title">Choose departure & return time</h2>
+            <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={setStartTime} onEndChange={setEndTime} />
           </div>
         </div>
         <div className="right-col">
