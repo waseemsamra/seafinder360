@@ -33,9 +33,9 @@ export default function LoginPage() {
         .maybeSingle();
 
       if (profile?.role_id === 1) {
-        window.location.href = "/admin";
+        window.location.replace("/admin");
       } else {
-        window.location.href = "/";
+        window.location.replace("/");
       }
       return;
     }
