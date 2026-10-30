@@ -93,7 +93,7 @@ export default function WatersportsAdventure() {
 
       <div id="ws-lightbox" className="ws-lightbox">
         <span id="ws-close-btn" style={{ position: "absolute", top: "20px", right: "40px", color: "#fff", fontSize: "40px", fontWeight: 300, cursor: "pointer", fontFamily: "sans-serif" }}>&times;</span>
-        <img id="ws-lightbox-img" src="" alt="Enlarged view" style={{ maxWidth: "90%", maxHeight: "90vh", objectFit: "contain", boxShadow: "0 0 30px rgba(0,0,0,0.5)", transform: "scale(0.95)", transition: "transform 0.3s ease" }} />
+        <img id="ws-lightbox-img" alt="Enlarged view" style={{ maxWidth: "90%", maxHeight: "90vh", objectFit: "contain", boxShadow: "0 0 30px rgba(0,0,0,0.5)", transform: "scale(0.95)", transition: "transform 0.3s ease" }} />
       </div>
       <style jsx>{`
         .ws-lightbox {
