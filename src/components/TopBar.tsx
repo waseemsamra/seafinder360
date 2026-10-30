@@ -1,4 +1,61 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
+
 export default function TopBar() {
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role_id')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (profile?.role_id === 1) setIsAdmin(true);
+      }
+    };
+    getUser();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role_id')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (profile?.role_id === 1) setIsAdmin(true);
+        else setIsAdmin(false);
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch {}
+    try { localStorage.clear(); sessionStorage.clear(); } catch {}
+    try {
+      document.cookie.split(";").forEach((c) => {
+        const name = c.split("=")[0].trim();
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      });
+    } catch {}
+    window.location.href = "/";
+  };
+
   return (
     <div className="top-bar" style={{ width: '100%', padding: '0' }}>
       <div style={{ maxWidth: '1404px', margin: '0 auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', boxSizing: 'border-box' }}>
@@ -12,8 +69,19 @@ export default function TopBar() {
             DUBAI MARINA WALK | DUBAI, UAE
           </div>
         </div>
-        <div className="top-bar-right">
+        <div className="top-bar-right" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div className="social-icons"><span>f</span><span>ig</span><span>tt</span></div>
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
+              {isAdmin && <Link href="/admin" style={{ color: '#C4A87C', textDecoration: 'none', fontWeight: 600 }}>Admin</Link>}
+              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '12px' }}>Logout</button>
+            </div>
+          ) : (
+            <Link href="/login" style={{ color: '#fff', textDecoration: 'none', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>
