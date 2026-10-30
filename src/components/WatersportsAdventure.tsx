@@ -10,13 +10,15 @@ export default function WatersportsAdventure() {
     const closeBtn = document.getElementById('ws-close-btn');
 
     galleryItems.forEach(item => {
-      const img = item.querySelector('img') as HTMLImageElement;
-      if (!img) return;
+      const img = item.querySelector('img');
+      if (!(img instanceof HTMLImageElement)) return;
       item.addEventListener('click', () => {
-        if (lightboxImg) lightboxImg.src = img.src;
-        lightbox?.classList.add('active');
+        const lightboxImgEl = document.getElementById('ws-lightbox-img');
+        if (lightboxImgEl instanceof HTMLImageElement) lightboxImgEl.src = img.src;
+        document.getElementById('ws-lightbox')?.classList.add('active');
         document.body.style.overflow = 'hidden';
       });
+    });
     });
 
     const closeLightbox = () => {
