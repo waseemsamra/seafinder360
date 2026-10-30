@@ -19,7 +19,7 @@ export default function AdminLayout({ children, user, activePage = "users" }: Ad
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
       });
     } catch {}
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (
