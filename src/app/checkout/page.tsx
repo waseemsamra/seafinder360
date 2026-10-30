@@ -1,11 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import TimeRangePicker from "./time-picker";
 
 export default function CheckoutPage() {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("12:00");
+  const [hours, setHours] = useState(3);
+  useEffect(() => {
+    const [sh, sm] = startTime.split(":").map(Number);
+    const [eh, em] = endTime.split(":").map(Number);
+    let diff = (eh * 60 + em) - (sh * 60 + sm);
+    if (diff < 0) diff += 24 * 60;
+    const h = Math.round(diff / 60 * 10) / 10;
+    if (h > 0) setHours(h);
+  }, [startTime, endTime]);
   return (
     <>
       <header className="header">
@@ -59,14 +68,14 @@ export default function CheckoutPage() {
             <h2 className="section-title">Select your tickets</h2>
             <div className="ticket-card">
               <div className="ticket-info">
-                <h4>Guest</h4>
-                <p>Age 8+</p>
-                <div className="price">AED 900.00</div>
+                <h4>Charter Hours</h4>
+                <p>{hours} hour{hours !== 1 ? 's' : ''} (auto-calculated)</p>
+                <div className="price">AED {(900 * hours).toFixed(2)}</div>
               </div>
               <div className="counter-pill">
-                <button className="counter-btn">−</button>
-                <div className="counter-val">1</div>
-                <button className="counter-btn">+</button>
+                <button className="counter-btn" disabled>−</button>
+                <div className="counter-val">{hours}</div>
+                <button className="counter-btn" disabled>+</button>
               </div>
             </div>
           </div>
@@ -88,12 +97,12 @@ export default function CheckoutPage() {
               </div>
             </div>
             <div className="price-breakdown">
-              <div className="price-row"><span>1 × Charter</span><span>AED 900.00</span></div>
-              <div className="price-row muted"><span>Service fee</span><span>AED 25.00</span></div>
-              <div className="price-row muted"><span>VAT (5%)</span><span>AED 46.25</span></div>
+              <div className="price-row"><span>{hours} × Charter Hour{hours !== 1 ? 's' : ''}</span><span>AED {(900 * hours).toFixed(2)}</span></div>
+              <div className="price-row muted"><span>Service fee</span><span>AED {(25 * hours).toFixed(2)}</span></div>
+              <div className="price-row muted"><span>VAT (5%)</span><span>AED {((900 * hours + 25 * hours) * 0.05).toFixed(2)}</span></div>
             </div>
-            <div className="total-row"><span className="label">Total</span><span className="amount">AED 971.25</span></div>
-            <div className="points-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg> You'll earn 971 points on this booking</div>
+            <div className="total-row"><span className="label">Total</span><span className="amount">AED {((900 * hours + 25 * hours) * 1.05).toFixed(2)}</span></div>
+            <div className="points-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg> You'll earn {Math.round((900 * hours + 25 * hours) * 1.05)} points on this booking</div>
             <Link href="/enhance" className="btn-continue">Continue <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg></Link>
             <div className="trust-badges">
               <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg> Secure booking</span>
