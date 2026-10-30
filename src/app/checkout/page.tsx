@@ -5,15 +5,15 @@ import TimeRangePicker from "./time-picker";
 
 export default function CheckoutPage() {
   const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("12:00");
-  const [hours, setHours] = useState(3);
+  const [endTime, setEndTime] = useState("10:00");
+  const [hours, setHours] = useState(1);
   useEffect(() => {
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
     let diff = (eh * 60 + em) - (sh * 60 + sm);
     if (diff < 0) diff += 24 * 60;
-    const h = Math.round(diff / 60 * 10) / 10;
-    if (h > 0) setHours(h);
+    const h = Math.max(1, Math.round(diff / 60 * 10) / 10);
+    if (h >= 1) setHours(h);
   }, [startTime, endTime]);
   return (
     <>
@@ -73,15 +73,16 @@ export default function CheckoutPage() {
                 <div className="price">AED {(900 * hours).toFixed(2)}</div>
               </div>
               <div className="counter-pill">
-                <button className="counter-btn" disabled>−</button>
+                <button className="counter-btn" onClick={() => setHours(Math.max(1, hours - 0.5))} disabled={hours <= 1}>−</button>
                 <div className="counter-val">{hours}</div>
-                <button className="counter-btn" disabled>+</button>
+                <button className="counter-btn" onClick={() => setHours(hours + 0.5)}>+</button>
               </div>
             </div>
           </div>
           <div>
-            <h2 className="section-title">Choose departure & return time</h2>
-            <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={setStartTime} onEndChange={setEndTime} />
+            <h2 className="section-title">Choose departure time</h2>
+            <TimeRangePicker startValue={startTime} endValue={endTime} onStartChange={(t) => { setStartTime(t); const [sh,sm]=t.split(':').map(Number); setEndTime(`${String(Math.min(23, sh+1)).padStart(2,'0')}:${String(sm).padStart(2,'0')}`); }} onEndChange={setEndTime} />
+            <div style={{ marginTop: "10px", textAlign: "center", color: "#666", fontSize: "13px" }}>Duration: {hours} hr{hours !== 1 ? 's' : ''} (minimum 1 hour)</div>
           </div>
         </div>
         <div className="right-col">

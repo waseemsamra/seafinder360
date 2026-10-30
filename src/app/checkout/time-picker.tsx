@@ -12,7 +12,7 @@ interface TimeRangePickerProps {
   onEndChange?: (time: string) => void;
 }
 
-export default function TimeRangePicker({ startValue = "09:00", endValue = "12:00", onStartChange, onEndChange }: TimeRangePickerProps) {
+export default function TimeRangePicker({ startValue = "09:00", endValue = "10:00", onStartChange, onEndChange }: TimeRangePickerProps) {
   const [startHour, setStartHour] = useState(startValue.split(":")[0]);
   const [startMin, setStartMin] = useState(startValue.split(":")[1] || "00");
   const [endHour, setEndHour] = useState(endValue.split(":")[0]);
@@ -21,7 +21,7 @@ export default function TimeRangePicker({ startValue = "09:00", endValue = "12:0
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <div>
-        <div style={{ fontSize: "13px", color: "#666", marginBottom: "8px", fontWeight: 600 }}>Start Time</div>
+        <div style={{ fontSize: "13px", color: "#666", marginBottom: "8px", fontWeight: 600 }}>Departure Time</div>
         <div style={{ display: "flex", gap: "12px", padding: "16px", background: "#f9f9f9", borderRadius: "12px", justifyContent: "center", alignItems: "center" }}>
           <select
             value={startHour}
@@ -46,34 +46,8 @@ export default function TimeRangePicker({ startValue = "09:00", endValue = "12:0
           </select>
         </div>
       </div>
-      <div>
-        <div style={{ fontSize: "13px", color: "#666", marginBottom: "8px", fontWeight: 600 }}>End Time</div>
-        <div style={{ display: "flex", gap: "12px", padding: "16px", background: "#f9f9f9", borderRadius: "12px", justifyContent: "center", alignItems: "center" }}>
-          <select
-            value={endHour}
-            onChange={(e) => {
-              setEndHour(e.target.value);
-              if (onEndChange) onEndChange(`${e.target.value}:${endMin}`);
-            }}
-            style={{ padding: "12px 20px", fontSize: "16px", borderRadius: "8px", border: "1px solid #ddd", background: "white", cursor: "pointer" }}
-          >
-            {hours.map((h) => (<option key={h} value={h}>{h}</option>))}
-          </select>
-          <div style={{ fontSize: "20px", fontWeight: "bold" }}>:</div>
-          <select
-            value={endMin}
-            onChange={(e) => {
-              setEndMin(e.target.value);
-              if (onEndChange) onEndChange(`${endHour}:${e.target.value}`);
-            }}
-            style={{ padding: "12px 20px", fontSize: "16px", borderRadius: "8px", border: "1px solid #ddd", background: "white", cursor: "pointer" }}
-          >
-            {minutes.map((m) => (<option key={m} value={m}>{m}</option>))}
-          </select>
-        </div>
-      </div>
       <div style={{ textAlign: "center", color: "#666", fontSize: "14px" }}>
-        {startHour}:{startMin} – {endHour}:{endMin}
+        Departure: {startHour}:{startMin} | Duration: {Math.max(1, ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin))) < 0 ? ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin)))+1440 : ((parseInt(endHour)*60+parseInt(endMin)) - (parseInt(startHour)*60+parseInt(startMin))))/60} hrs (min 1 hr)
       </div>
     </div>
   );
