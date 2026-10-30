@@ -19,13 +19,13 @@ export default function WatersportsAdventure() {
         document.body.style.overflow = 'hidden';
       });
     });
-    });
 
     const closeLightbox = () => {
       lightbox?.classList.remove('active');
       document.body.style.overflow = '';
       setTimeout(() => {
-        if (lightboxImg) (lightboxImg as HTMLImageElement).src = '';
+        const lightboxImgEl2 = document.getElementById('ws-lightbox-img');
+        if (lightboxImgEl2 instanceof HTMLImageElement) lightboxImgEl2.src = '';
       }, 300);
     };
 
