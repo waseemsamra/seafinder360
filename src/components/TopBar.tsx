@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 export default function TopBar() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -40,11 +38,7 @@ export default function TopBar() {
         setIsAdmin(false);
       }
     });
-    const click = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('click', click);
-    return () => { subscription.unsubscribe(); document.removeEventListener('click', click); };
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
@@ -78,17 +72,15 @@ export default function TopBar() {
         <div className="top-bar-right" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div className="social-icons"><span>f</span><span>ig</span><span>tt</span></div>
           {user ? (
-            <div ref={ref} style={{ position: 'relative' }}>
-              <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                Account
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px' }}>
+              {isAdmin && <Link href="/admin" style={{ color: '#C4A87C', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Admin
+              </Link>}
+              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Logout
               </button>
-              {open && (
-                <div style={{ position: 'absolute', right: 0, top: '120%', background: '#fff', color: '#000', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', minWidth: '140px', zIndex: 1000 }}>
-                  {isAdmin && <Link href="/admin" style={{ display: 'block', padding: '10px 14px', textDecoration: 'none', color: '#000', fontSize: '13px' }}>Admin Dashboard</Link>}
-                  <button onClick={handleLogout} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px' }}>Logout</button>
-                </div>
-              )}
             </div>
           ) : (
             <Link href="/login" style={{ color: '#fff', textDecoration: 'none', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
